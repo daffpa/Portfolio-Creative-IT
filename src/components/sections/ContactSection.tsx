@@ -68,7 +68,9 @@ export default function ContactSection() {
 
         <GlassCard padding="lg" className="max-w-2xl mx-auto">
           <form
-            onSubmit={(e) => e.preventDefault()}
+            action="mailto:daffagyanza@gmail.com"
+            method="POST"
+            encType="text/plain"
             className="space-y-5"
           >
             {/* Name */}
@@ -78,6 +80,7 @@ export default function ContactSection() {
               </label>
               <input
                 id="contact-name"
+                name="Nama"
                 type="text"
                 placeholder="Nama lengkap Anda"
                 className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-accent-violet/40 focus:ring-1 focus:ring-accent-violet/20 transition-all"
@@ -91,6 +94,7 @@ export default function ContactSection() {
               </label>
               <input
                 id="contact-email"
+                name="Email"
                 type="email"
                 placeholder="email@contoh.com"
                 className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-accent-violet/40 focus:ring-1 focus:ring-accent-violet/20 transition-all"
@@ -104,6 +108,7 @@ export default function ContactSection() {
               </label>
               <textarea
                 id="contact-message"
+                name="Pesan"
                 rows={4}
                 placeholder="Ceritakan tentang proyek atau ide Anda..."
                 className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-accent-violet/40 focus:ring-1 focus:ring-accent-violet/20 transition-all resize-none"
@@ -111,9 +116,11 @@ export default function ContactSection() {
             </div>
 
             {/* Submit */}
-            <GlowButton variant="primary" className="w-full">
-              Kirim Pesan
-            </GlowButton>
+            <button type="submit" className="w-full">
+              <GlowButton variant="primary" className="w-full">
+                Kirim Pesan
+              </GlowButton>
+            </button>
           </form>
         </GlassCard>
 

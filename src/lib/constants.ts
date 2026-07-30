@@ -63,8 +63,7 @@ export const NAV_LINKS = [
 export const SOCIAL_LINKS = [
   { label: "GitHub", href: "https://github.com/", icon: "github" },
   { label: "LinkedIn", href: "https://linkedin.com/in/", icon: "linkedin" },
-  { label: "Instagram", href: "https://instagram.com/", icon: "instagram" },
-  { label: "Email", href: "mailto:hello@example.com", icon: "email" },
+  { label: "Email", href: "mailto:daffagyanza@gmail.com", icon: "email" },
 ] as const;
 
 export const PARTICLE_CONFIG = {
