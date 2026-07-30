@@ -1,107 +1,179 @@
 "use client";
 
+import { motion, Variants } from "framer-motion";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import SectionHeading from "../ui/SectionHeading";
-import ProjectCard from "../ui/ProjectCard";
 import { projects, PROJECT_CATEGORIES, type ProjectCategory } from "@/data/projects";
 
 // ============================================================
-// ProjectsSection — Filterable Bento Grid
+// ProjectsSection — Bento Grid + Category Filter
 // ============================================================
 
 export default function ProjectsSection() {
   const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
 
-  const filteredProjects =
+  const filtered =
     activeFilter === "all"
       ? projects
       : projects.filter((p) => p.category === activeFilter);
 
+  const containerVariants: Variants = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.1 } },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 30, scale: 0.97 },
+    show: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+    },
+  };
+
   return (
-    <section id="projects" className="relative py-24 md:py-32 section-padding bg-bg-secondary">
-      {/* Background decoration */}
-      <div
-        className="absolute inset-0 pointer-events-none dot-grid opacity-30"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: "radial-gradient(ellipse at 20% 50%, rgba(6,182,212,0.04) 0%, transparent 60%)",
-        }}
-        aria-hidden="true"
-      />
+    <section id="projects" className="relative py-section">
+      <div className="max-w-[1200px] mx-auto px-6">
+        {/* Section Label */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="section-label mb-4"
+        >
+          02 — Proyek
+        </motion.p>
 
-      <div className="relative z-10 max-w-6xl mx-auto">
-        <SectionHeading
-          label="// karya saya"
-          title="Projects"
-          description="Berikut beberapa proyek yang pernah saya kerjakan — dari sistem informasi, game development, hingga desain visual."
-        />
-
-        {/* Filter Tabs */}
-        <motion.div
-          className="flex flex-wrap gap-2 mb-10"
-          initial={{ opacity: 0, y: 15 }}
+        {/* Heading */}
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.6 }}
+          className="font-heading text-3xl md:text-5xl font-bold text-text mb-12 leading-tight"
+        >
+          Karya <span className="gradient-text">terpilih</span>
+        </motion.h2>
+
+        {/* Category Filter */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-wrap gap-2 mb-12"
         >
           {PROJECT_CATEGORIES.map((cat) => (
             <button
               key={cat.value}
               onClick={() => setActiveFilter(cat.value)}
-              className={`
-                px-4 py-2 rounded-full font-mono text-xs tracking-wide transition-all duration-300 cursor-pointer
-                ${
-                  activeFilter === cat.value
-                    ? "bg-accent-violet text-white shadow-[0_0_20px_rgba(139,92,246,0.25)]"
-                    : "bg-white/[0.04] border border-white/[0.06] text-text-secondary hover:bg-white/[0.08] hover:text-text-primary"
-                }
-              `}
+              className={`filter-pill rounded-full border transition-all duration-300 ${
+                activeFilter === cat.value
+                  ? "active border-accent/40 bg-accent/10 text-text"
+                  : "border-border hover:border-border-hover"
+              }`}
             >
               {cat.label}
             </button>
           ))}
         </motion.div>
 
-        {/* Project Grid — Bento style */}
+        {/* Bento Grid */}
         <motion.div
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+          className="bento-grid"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-50px" }}
+          key={activeFilter} // Re-trigger animation on filter change
         >
-          <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, i) => (
-              <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-                className={project.featured ? "md:col-span-2" : ""}
-              >
-                <ProjectCard
-                  project={project}
-                  index={i}
-                  featured={project.featured}
-                />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+          {filtered.map((project, index) => (
+            <motion.article
+              key={project.id}
+              variants={itemVariants}
+              className={`glass-card glow-border overflow-hidden group flex flex-col ${
+                project.featured && index < 2 ? "md:col-span-2" : ""
+              }`}
+            >
+              {/* Image / Gradient Placeholder */}
+              <div className="relative h-48 md:h-56 overflow-hidden">
+                {project.image ? (
+                  <div
+                    className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                    style={{ backgroundImage: `url('${project.image}')` }}
+                  />
+                ) : (
+                  <div
+                    className="w-full h-full transition-all duration-700 group-hover:scale-105"
+                    style={{
+                      background: `linear-gradient(135deg, 
+                        ${index % 3 === 0 ? "rgba(124,92,255,0.2)" : index % 3 === 1 ? "rgba(0,212,255,0.2)" : "rgba(255,107,157,0.2)"} 0%, 
+                        var(--color-bg-elevated) 100%)`,
+                    }}
+                  />
+                )}
+                {/* Year badge */}
+                <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-bg/70 backdrop-blur-sm font-mono text-[11px] text-text-muted border border-border">
+                  {project.year}
+                </div>
+                {/* Category badge */}
+                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-accent/20 backdrop-blur-sm font-mono text-[11px] text-accent-light border border-accent/20">
+                  {PROJECT_CATEGORIES.find(c => c.value === project.category)?.label}
+                </div>
+              </div>
 
-        {/* Empty state */}
-        {filteredProjects.length === 0 && (
-          <motion.p
-            className="text-center text-text-muted font-mono text-sm py-16"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            Belum ada proyek di kategori ini.
-          </motion.p>
-        )}
+              {/* Content */}
+              <div className="p-6 flex flex-col flex-grow">
+                <h3 className="font-heading text-xl font-bold text-text mb-3 group-hover:text-accent-light transition-colors duration-300">
+                  {project.title}
+                </h3>
+                <p className="font-mono text-sm text-text-muted leading-relaxed flex-grow mb-5">
+                  {project.description}
+                </p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 mb-5">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="font-mono text-[11px] text-text-dim px-2.5 py-1 rounded-full border border-border"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Action */}
+                <div className="flex gap-3">
+                  {project.liveUrl && (
+                    <a
+                      href={project.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-2.5 text-center font-mono text-xs uppercase tracking-wider rounded-lg bg-accent/10 text-accent-light border border-accent/20 hover:bg-accent/20 transition-all"
+                    >
+                      Live Demo
+                    </a>
+                  )}
+                  {project.repoUrl && (
+                    <a
+                      href={project.repoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-2.5 text-center font-mono text-xs uppercase tracking-wider rounded-lg border border-border text-text-muted hover:border-border-hover hover:text-text transition-all"
+                    >
+                      Source Code
+                    </a>
+                  )}
+                  {!project.liveUrl && !project.repoUrl && (
+                    <div className="flex-1 py-2.5 text-center font-mono text-xs uppercase tracking-wider rounded-lg border border-border text-text-dim">
+                      Coming Soon
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.article>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

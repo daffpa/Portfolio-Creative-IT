@@ -1,174 +1,139 @@
 "use client";
 
 import { motion } from "framer-motion";
-import SectionHeading from "../ui/SectionHeading";
-import GlassCard from "../ui/GlassCard";
-import GlowButton from "../ui/GlowButton";
 import { SOCIAL_LINKS } from "@/lib/constants";
 
 // ============================================================
-// Social icon SVGs
+// ContactSection — Split Layout + Social Cards
 // ============================================================
 
-function SocialIcon({ icon }: { icon: string }) {
-  switch (icon) {
-    case "github":
-      return (
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-        </svg>
-      );
-    case "linkedin":
-      return (
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-        </svg>
-      );
-    case "instagram":
-      return (
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-        </svg>
-      );
-    case "email":
-      return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-          <rect x="2" y="4" width="20" height="16" rx="2" />
-          <path d="M22 7l-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-}
-
-// ============================================================
-// ContactSection — Form + social links + footer
-// ============================================================
+const socialIcons: Record<string, string> = {
+  github: "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z",
+  linkedin: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
+  email: "M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z",
+};
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="relative py-24 md:py-32 section-padding bg-bg-secondary">
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 100%, rgba(139,92,246,0.06) 0%, transparent 50%)",
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="relative z-10 max-w-4xl mx-auto">
-        <SectionHeading
-          label="// kontak"
-          title="Let's Connect"
-          description="Punya proyek menarik atau ingin berkolaborasi? Jangan ragu untuk menghubungi saya."
-          align="center"
-        />
-
-        <GlassCard padding="lg" className="max-w-2xl mx-auto">
-          <form
-            action="mailto:daffagyanza@gmail.com"
-            method="POST"
-            encType="text/plain"
-            className="space-y-5"
-          >
-            {/* Name */}
-            <div>
-              <label htmlFor="contact-name" className="block font-mono text-xs text-text-muted mb-2 tracking-wider uppercase">
-                Nama
-              </label>
-              <input
-                id="contact-name"
-                name="Nama"
-                type="text"
-                placeholder="Nama lengkap Anda"
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-accent-violet/40 focus:ring-1 focus:ring-accent-violet/20 transition-all"
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label htmlFor="contact-email" className="block font-mono text-xs text-text-muted mb-2 tracking-wider uppercase">
-                Email
-              </label>
-              <input
-                id="contact-email"
-                name="Email"
-                type="email"
-                placeholder="email@contoh.com"
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-accent-violet/40 focus:ring-1 focus:ring-accent-violet/20 transition-all"
-              />
-            </div>
-
-            {/* Message */}
-            <div>
-              <label htmlFor="contact-message" className="block font-mono text-xs text-text-muted mb-2 tracking-wider uppercase">
-                Pesan
-              </label>
-              <textarea
-                id="contact-message"
-                name="Pesan"
-                rows={4}
-                placeholder="Ceritakan tentang proyek atau ide Anda..."
-                className="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-accent-violet/40 focus:ring-1 focus:ring-accent-violet/20 transition-all resize-none"
-              />
-            </div>
-
-            {/* Submit */}
-            <button type="submit" className="w-full">
-              <GlowButton variant="primary" className="w-full">
-                Kirim Pesan
-              </GlowButton>
-            </button>
-          </form>
-        </GlassCard>
-
-        {/* Social Links */}
-        <motion.div
-          className="flex items-center justify-center gap-4 mt-10"
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {SOCIAL_LINKS.map((link) => (
-            <motion.a
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-11 h-11 rounded-full bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-text-muted hover:text-accent-violet hover:border-accent-violet/30 hover:bg-accent-violet/10 transition-all duration-300"
-              whileHover={{ scale: 1.1, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              aria-label={link.label}
-            >
-              <SocialIcon icon={link.icon} />
-            </motion.a>
-          ))}
-        </motion.div>
-
-        {/* Footer */}
-        <motion.div
-          className="text-center mt-16 pt-8 border-t border-white/[0.04]"
+    <section id="contact" className="relative py-section">
+      <div className="max-w-[1200px] mx-auto px-6">
+        {/* Section Label */}
+        <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
+          className="section-label mb-4"
         >
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <div className="h-px w-8 bg-gradient-to-r from-transparent to-accent-violet/30" />
-            <span className="font-mono text-[10px] text-text-muted tracking-[0.3em]">
-              BUILT WITH PASSION
-            </span>
-            <div className="h-px w-8 bg-gradient-to-l from-transparent to-accent-violet/30" />
-          </div>
-          <p className="text-text-muted text-xs font-mono">
-            © {new Date().getFullYear()} — Designed & Developed with{" "}
-            <span className="text-accent-rose">♥</span> and{" "}
-            <span className="text-accent-violet">Next.js</span>
-          </p>
-        </motion.div>
+          03 — Kontak
+        </motion.p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
+          {/* Left: CTA + Socials */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col justify-center"
+          >
+            <h2 className="font-heading text-3xl md:text-5xl font-bold text-text mb-6 leading-tight">
+              Mari{" "}
+              <span className="gradient-text">berkolaborasi</span>
+            </h2>
+            <p className="font-mono text-sm text-text-muted leading-relaxed mb-10 max-w-md">
+              Punya ide proyek menarik atau ingin berdiskusi? Saya selalu terbuka untuk kesempatan baru. Kirim pesan dan mari kita wujudkan bersama.
+            </p>
+
+            {/* Social Cards */}
+            <div className="flex flex-col gap-3">
+              {SOCIAL_LINKS.map((link, i) => (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+                  target={link.icon === "email" ? undefined : "_blank"}
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  whileHover={{ x: 6 }}
+                  className="flex items-center gap-4 px-5 py-4 rounded-xl border border-border hover:border-accent/30 hover:bg-bg-elevated transition-all duration-300 group"
+                >
+                  <svg
+                    className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors"
+                    fill="currentColor"
+                    viewBox={link.icon === "email" ? "0 0 24 24" : "0 0 24 24"}
+                  >
+                    <path d={socialIcons[link.icon]} />
+                  </svg>
+                  <span className="font-mono text-sm text-text-muted group-hover:text-text transition-colors">
+                    {link.label}
+                  </span>
+                  <span className="ml-auto font-mono text-xs text-text-dim group-hover:text-accent-cyan transition-colors">
+                    →
+                  </span>
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Right: Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <form
+              action="mailto:daffagyanza@gmail.com"
+              method="POST"
+              encType="text/plain"
+              className="glass-card p-8 rounded-2xl space-y-6"
+            >
+              <div>
+                <label className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">
+                  Nama
+                </label>
+                <input
+                  name="Name"
+                  type="text"
+                  placeholder="Nama lengkap Anda"
+                  className="w-full bg-bg-elevated border border-border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20 transition-all placeholder:text-text-dim"
+                />
+              </div>
+              <div>
+                <label className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">
+                  Email
+                </label>
+                <input
+                  name="Email"
+                  type="email"
+                  placeholder="email@contoh.com"
+                  className="w-full bg-bg-elevated border border-border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20 transition-all placeholder:text-text-dim"
+                />
+              </div>
+              <div>
+                <label className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">
+                  Pesan
+                </label>
+                <textarea
+                  name="Message"
+                  placeholder="Ceritakan ide proyek Anda..."
+                  rows={5}
+                  className="w-full bg-bg-elevated border border-border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20 transition-all placeholder:text-text-dim resize-none"
+                />
+              </div>
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full py-4 rounded-xl bg-gradient-to-r from-accent to-accent-cyan text-white font-heading font-semibold text-sm tracking-wide shadow-lg shadow-accent/20 hover:shadow-accent/30 transition-shadow"
+              >
+                Kirim Pesan
+              </motion.button>
+            </form>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 // ============================================================
-// Font Configuration
+// Font Configuration — Midnight Gradient
 // ============================================================
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500"],
 });
 
 // ============================================================
@@ -27,25 +27,10 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Daffa — Creative Developer & IT Specialist",
   description:
-    "Portofolio interaktif — perpaduan kreativitas desain dan keahlian teknikal. Sistem Informasi, Game Development, dan Visual Design.",
-  keywords: [
-    "portfolio",
-    "creative developer",
-    "IT specialist",
-    "web developer",
-    "game developer",
-    "UI/UX designer",
-    "sistem informasi",
-  ],
-  authors: [{ name: "Daffa" }],
-  openGraph: {
-    title: "Daffa — Creative Developer & IT Specialist",
-    description:
-      "Portofolio interaktif — kreativitas desain bertemu keahlian teknikal.",
-    type: "website",
-    locale: "id_ID",
+    "Portfolio interaktif Daffa — perpaduan kreativitas desain dan keahlian teknikal. Sistem Informasi, Game Development, dan Visual Design.",
+  icons: {
+    icon: "/favicon.ico",
   },
-  robots: { index: true, follow: true },
 };
 
 // ============================================================
@@ -60,9 +45,16 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-bg-primary text-text-primary">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="min-h-screen relative bg-bg text-text">
+        <div className="bg-noise"></div>
         {children}
       </body>
     </html>
