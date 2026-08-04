@@ -5,20 +5,21 @@ import { HERO_CONTENT, TYPEWRITER_ROLES } from "@/lib/constants";
 import { useState, useEffect } from "react";
 
 // ============================================================
-// HeroSection — Midnight Gradient: Text Reveal + Gradient Orb
+// HeroSection — Bold Multi-Color Letters + Statement
 // ============================================================
+
+const LETTER_COLORS = ["#2563ff", "#ff4757", "#48ff91", "#ffc23a", "#ff2d87"];
 
 export default function HeroSection() {
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
 
-  // Typewriter effect
   useEffect(() => {
     const currentRole = TYPEWRITER_ROLES[roleIndex];
-    let charIndex = 0;
 
     if (isTyping) {
+      let charIndex = 0;
       const typeTimer = setInterval(() => {
         setDisplayText(currentRole.slice(0, charIndex + 1));
         charIndex++;
@@ -30,19 +31,20 @@ export default function HeroSection() {
       return () => clearInterval(typeTimer);
     } else {
       const deleteTimer = setInterval(() => {
-        setDisplayText((prev) => prev.slice(0, -1));
-        charIndex--;
-        if (displayText.length <= 1) {
-          clearInterval(deleteTimer);
-          setRoleIndex((prev) => (prev + 1) % TYPEWRITER_ROLES.length);
-          setIsTyping(true);
-        }
+        setDisplayText((prev) => {
+          if (prev.length <= 1) {
+            clearInterval(deleteTimer);
+            setRoleIndex((p) => (p + 1) % TYPEWRITER_ROLES.length);
+            setIsTyping(true);
+            return "";
+          }
+          return prev.slice(0, -1);
+        });
       }, 40);
       return () => clearInterval(deleteTimer);
     }
-  }, [roleIndex, isTyping, displayText.length]);
+  }, [roleIndex, isTyping]);
 
-  // Letter-by-letter animation for name
   const nameLetters = "DAFFA".split("");
 
   return (
@@ -50,53 +52,24 @@ export default function HeroSection() {
       id="hero"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Gradient Orb Background */}
+      {/* Bold color blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-1/2 left-1/2 w-[600px] h-[600px] rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(124,92,255,0.15) 0%, rgba(0,212,255,0.05) 40%, transparent 70%)",
-            filter: "blur(60px)",
-          }}
-          animate={{
-            x: ["-50%", "-45%", "-55%", "-50%"],
-            y: ["-50%", "-55%", "-45%", "-50%"],
-            scale: [1, 1.1, 0.95, 1],
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-[30%] right-[10%] w-[300px] h-[300px] rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(255,107,157,0.1) 0%, transparent 60%)",
-            filter: "blur(40px)",
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 0.8, 0.5],
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
+        <div className="bold-blob w-[500px] h-[500px] bg-blue top-[10%] left-[-10%]" style={{ background: "rgba(37,99,255,0.12)" }} />
+        <div className="bold-blob w-[400px] h-[400px] top-[60%] right-[-5%]" style={{ background: "rgba(255,71,87,0.1)" }} />
+        <div className="bold-blob w-[300px] h-[300px] top-[20%] right-[20%]" style={{ background: "rgba(72,255,145,0.06)" }} />
 
-        {/* Floating Particles */}
-        {Array.from({ length: 12 }).map((_, i) => (
+        {/* Particles */}
+        {Array.from({ length: 10 }).map((_, i) => (
           <div
             key={i}
             className="particle"
             style={{
-              left: `${8 + i * 8}%`,
-              animationDelay: `${i * 1.5}s`,
-              animationDuration: `${8 + ((i * 3) % 7)}s`,
-              background:
-                i % 3 === 0
-                  ? "var(--color-accent)"
-                  : i % 3 === 1
-                    ? "var(--color-accent-cyan)"
-                    : "var(--color-accent-pink)",
-              width: `${2 + (i % 3)}px`,
-              height: `${2 + (i % 3)}px`,
+              left: `${10 + i * 9}%`,
+              animationDelay: `${i * 1.8}s`,
+              animationDuration: `${9 + ((i * 3) % 6)}s`,
+              background: LETTER_COLORS[i % LETTER_COLORS.length],
+              width: `${3 + (i % 3)}px`,
+              height: `${3 + (i % 3)}px`,
             }}
           />
         ))}
@@ -105,54 +78,66 @@ export default function HeroSection() {
       {/* Content */}
       <div className="relative z-10 max-w-[1200px] mx-auto px-6 w-full">
         <div className="flex flex-col items-center text-center">
-          {/* Section Label */}
+          {/* Label */}
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="section-label mb-6"
+            className="section-label mb-8"
           >
-            — Portfolio 2024 —
+            — Portfolio 2026 —
           </motion.p>
 
-          {/* Name with letter animation */}
-          <div className="flex gap-2 md:gap-4 mb-4">
+          {/* Multi-color Name */}
+          <div className="flex gap-2 md:gap-5 mb-6">
             {nameLetters.map((letter, i) => (
               <motion.span
                 key={i}
-                initial={{ opacity: 0, y: 60, rotateX: -90 }}
-                animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                initial={{ opacity: 0, y: 80, rotate: -15 }}
+                animate={{ opacity: 1, y: 0, rotate: 0 }}
                 transition={{
-                  delay: 0.4 + i * 0.1,
-                  duration: 0.6,
+                  delay: 0.3 + i * 0.12,
+                  duration: 0.7,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="font-heading text-[64px] sm:text-[80px] md:text-[120px] lg:text-[150px] font-black leading-none gradient-text-animated"
+                style={{ color: LETTER_COLORS[i] }}
+                className="font-heading text-[56px] sm:text-[72px] md:text-[110px] lg:text-[140px] font-bold leading-none"
               >
                 {letter}
               </motion.span>
             ))}
           </div>
 
-          {/* Typewriter Role */}
+          {/* Bold headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0, duration: 0.6 }}
+            className="font-heading text-xl sm:text-2xl md:text-3xl font-semibold text-text mb-4 max-w-2xl leading-snug"
+          >
+            Mengubah masalah kompleks menjadi{" "}
+            <span className="gradient-text-animated">solusi yang jelas</span>
+          </motion.h1>
+
+          {/* Typewriter */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.2 }}
-            className="h-10 flex items-center justify-center mb-8"
+            transition={{ delay: 1.3 }}
+            className="h-8 flex items-center justify-center mb-8"
           >
-            <span className="font-mono text-lg md:text-xl text-accent-light tracking-widest">
+            <span className="font-mono text-base md:text-lg text-text-muted tracking-widest">
               {displayText}
             </span>
-            <span className="w-[2px] h-6 bg-accent-cyan ml-1 animate-pulse" />
+            <span className="w-[2px] h-5 bg-coral ml-1 animate-pulse" />
           </motion.div>
 
           {/* Description */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.4, duration: 0.6 }}
-            className="font-mono text-sm md:text-base text-text-muted max-w-xl leading-relaxed mb-10"
+            transition={{ delay: 1.5, duration: 0.6 }}
+            className="font-mono text-sm text-text-muted max-w-lg leading-relaxed mb-10"
           >
             {HERO_CONTENT.subheadline}
           </motion.p>
@@ -161,14 +146,14 @@ export default function HeroSection() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.6 }}
+            transition={{ delay: 1.7 }}
             className="flex flex-col sm:flex-row gap-4"
           >
             <motion.a
               href="#projects"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-3.5 rounded-full bg-gradient-to-r from-accent to-accent-cyan text-white font-heading font-semibold text-sm tracking-wide shadow-lg shadow-accent/20 hover:shadow-accent/40 transition-shadow"
+              className="px-8 py-3.5 rounded-full bg-blue text-white font-heading font-semibold text-sm tracking-wide shadow-lg shadow-blue/25 hover:shadow-blue/40 transition-shadow"
             >
               Lihat Karya Saya
             </motion.a>
@@ -176,7 +161,7 @@ export default function HeroSection() {
               href="#contact"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-3.5 rounded-full border border-border hover:border-accent/40 text-text-muted hover:text-text font-heading font-semibold text-sm tracking-wide transition-all"
+              className="px-8 py-3.5 rounded-full border border-border hover:border-coral/40 text-text-muted hover:text-text font-heading font-semibold text-sm tracking-wide transition-all"
             >
               Hubungi Saya
             </motion.a>
@@ -193,7 +178,7 @@ export default function HeroSection() {
           <span className="font-mono text-[10px] text-text-dim uppercase tracking-[0.3em]">
             Scroll
           </span>
-          <div className="w-[1px] h-8 bg-gradient-to-b from-accent/50 to-transparent" />
+          <div className="w-[1px] h-8 bg-gradient-to-b from-blue/50 to-transparent" />
         </motion.div>
       </div>
     </section>

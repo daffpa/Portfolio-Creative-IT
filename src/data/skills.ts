@@ -1,62 +1,76 @@
 // ============================================================
-// skills.ts — Skills data grouped by category
+// skills.ts — Multi-disciplinary skill groups
 // ============================================================
 
 export interface Skill {
   name: string;
   level: number; // 0-100
-  icon?: string;
 }
 
 export interface SkillGroup {
   category: string;
   description: string;
+  color: string;       // accent color for the card
+  colorClass: string;  // CSS class for border/glow
+  icon: string;        // Material Symbols icon name
   skills: Skill[];
 }
 
 export const skillGroups: SkillGroup[] = [
   {
-    category: "Frontend & Web",
-    description: "Membangun antarmuka web modern dan responsif",
+    category: "Analisis Bisnis",
+    description: "Memetakan, menganalisis, dan mengoptimalkan proses bisnis",
+    color: "#2563ff",
+    colorClass: "skill-card-blue",
+    icon: "account_tree",
     skills: [
-      { name: "React / Next.js", level: 85 },
-      { name: "TypeScript", level: 80 },
-      { name: "Tailwind CSS", level: 90 },
-      { name: "HTML & CSS", level: 95 },
-      { name: "Three.js", level: 60 },
+      { name: "BPMN Modeling", level: 85 },
+      { name: "Process Mapping", level: 80 },
+      { name: "Requirement Analysis", level: 75 },
+      { name: "Bizagi Modeler", level: 80 },
+      { name: "Flowchart & Diagram", level: 85 },
     ],
   },
   {
-    category: "Backend & Database",
-    description: "Arsitektur sistem dan pengelolaan data",
+    category: "Analisis Data",
+    description: "Mengolah data mentah menjadi insight yang actionable",
+    color: "#48ff91",
+    colorClass: "skill-card-lime",
+    icon: "analytics",
     skills: [
-      { name: "MySQL", level: 80 },
-      { name: "PHP", level: 70 },
-      { name: "Node.js", level: 65 },
-      { name: "Database Design", level: 85 },
-      { name: "REST API", level: 70 },
+      { name: "Excel / Google Sheets", level: 90 },
+      { name: "Pivot Table & Charts", level: 85 },
+      { name: "Data Cleaning", level: 80 },
+      { name: "Statistik Deskriptif", level: 75 },
+      { name: "SPSS", level: 65 },
     ],
   },
   {
-    category: "Game Development",
-    description: "Membuat pengalaman game yang imersif",
+    category: "Desain & Presentasi",
+    description: "Merancang visual yang menarik dan presentasi yang efektif",
+    color: "#ffc23a",
+    colorClass: "skill-card-amber",
+    icon: "palette",
     skills: [
-      { name: "Roblox Studio", level: 90 },
-      { name: "Luau Scripting", level: 85 },
-      { name: "Game Design", level: 80 },
-      { name: "Level Design", level: 75 },
-      { name: "Blender 3D", level: 55 },
+      { name: "PowerPoint / Google Slides", level: 90 },
+      { name: "Canva", level: 85 },
+      { name: "Figma", level: 75 },
+      { name: "Storytelling Visual", level: 80 },
+      { name: "Infografis", level: 80 },
     ],
   },
   {
-    category: "Desain & Kreativitas",
-    description: "Visual design dan identitas merek",
+    category: "Tools & Teknologi",
+    description: "Perangkat pendukung untuk development dan kolaborasi",
+    color: "#ff4757",
+    colorClass: "skill-card-coral",
+    icon: "code",
     skills: [
-      { name: "Figma", level: 85 },
-      { name: "Adobe Photoshop", level: 80 },
-      { name: "UI/UX Design", level: 75 },
-      { name: "Branding", level: 70 },
-      { name: "Motion Graphics", level: 50 },
+      { name: "HTML & CSS", level: 85 },
+      { name: "JavaScript / TypeScript", level: 75 },
+      { name: "Next.js / React", level: 70 },
+      { name: "MySQL / Database", level: 75 },
+      { name: "Git & GitHub", level: 80 },
     ],
   },
 ];

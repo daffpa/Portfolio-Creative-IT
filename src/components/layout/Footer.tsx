@@ -3,7 +3,7 @@
 import { SOCIAL_LINKS } from "@/lib/constants";
 
 // ============================================================
-// Footer — Minimalist Dark
+// Footer — Minimalist Dark with Color Accent
 // ============================================================
 
 const socialIcons: Record<string, string> = {
@@ -16,12 +16,10 @@ export default function Footer() {
   return (
     <footer className="relative border-t border-border py-8 px-6 md:px-12">
       <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        {/* Brand */}
         <a href="#hero" className="font-heading text-lg font-bold text-text">
-          daffa<span className="gradient-text">.</span>
+          daffa<span style={{ color: "#2563ff" }}>.</span>
         </a>
 
-        {/* Social Icons */}
         <div className="flex items-center gap-5">
           {SOCIAL_LINKS.map((link) => (
             <a
@@ -29,7 +27,7 @@ export default function Footer() {
               href={link.href}
               target={link.icon === "email" ? undefined : "_blank"}
               rel="noopener noreferrer"
-              className="text-text-dim hover:text-accent transition-colors duration-300"
+              className="text-text-dim hover:text-blue transition-colors duration-300"
               aria-label={link.label}
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -39,7 +37,6 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Copyright */}
         <p className="font-mono text-[11px] text-text-dim">
           © {new Date().getFullYear()} Daffa. All rights reserved.
         </p>

@@ -1,60 +1,51 @@
 // ============================================================
-// constants.ts — Creative-Tech Portfolio Configuration
+// constants.ts — Bold & Colorful Portfolio Configuration
 // ============================================================
 
 export const SITE_CONFIG = {
-  name: "Portfolio",
-  title: "Creative Developer & IT Specialist",
+  name: "Daffa",
+  title: "Multidisciplinary Problem Solver",
   description:
-    "Portofolio interaktif — perpaduan kreativitas desain dan keahlian teknikal. Sistem Informasi, Game Development, dan Visual Design.",
-  url: "https://portfolio.dev",
+    "Portfolio Daffa — analisis proses bisnis, analisis data, desain presentasi, dan solusi digital lintas bidang.",
+  url: "https://daffa.dev",
 } as const;
 
 export const TYPEWRITER_ROLES = [
-  "Creative Developer",
-  "IT Specialist",
-  "Visual Designer",
-  "System Architect",
-  "Game Developer",
+  "Business Analyst",
+  "Data Explorer",
+  "Presentation Designer",
+  "Digital Creator",
+  "Problem Solver",
 ] as const;
 
 export const HERO_CONTENT = {
   greeting: "Halo, saya",
   name: "Daffa",
-  headline: "Crafting Digital\nExperiences",
+  headline: "Mengubah masalah\nkompleks menjadi\nsolusi yang jelas",
   subheadline:
-    "Saya membangun solusi digital yang memadukan logika teknikal dengan kreativitas visual — dari sistem informasi hingga pengembangan game dan desain interaktif.",
+    "Saya menggabungkan analisis bisnis, eksplorasi data, dan desain visual untuk menciptakan solusi yang tidak hanya bekerja — tapi juga mudah dipahami dan menyenangkan untuk dilihat.",
   cta: { label: "Lihat Karya Saya", href: "#projects" },
   ctaSecondary: { label: "Hubungi Saya", href: "#contact" },
 } as const;
 
 export const ABOUT_CONTENT = {
-  bio: `Saya seorang mahasiswa dan kreator digital yang passionate dalam membangun produk digital dari nol. Dengan latar belakang di Sistem Informasi, saya menggabungkan pemahaman teknikal (database, arsitektur sistem, scripting) dengan sensibilitas desain untuk menciptakan pengalaman yang fungsional sekaligus estetis.
+  bio: `Saya seorang mahasiswa Sistem Informasi yang percaya bahwa setiap masalah punya cerita — dan cerita itu bisa disampaikan dengan lebih baik lewat data, proses yang jelas, dan visual yang menarik.
 
-Saya percaya bahwa teknologi terbaik adalah yang tidak hanya bekerja dengan baik, tapi juga terasa menyenangkan untuk digunakan.`,
+Dari memetakan alur bisnis menggunakan BPMN, mengolah data mentah menjadi insight yang actionable, hingga merancang presentasi yang membuat audiens tetap fokus — saya menikmati setiap tahap proses pemecahan masalah.
+
+Saya bukan hanya seorang analis atau desainer. Saya adalah jembatan antara keduanya.`,
   stats: [
-    { value: 15, suffix: "+", label: "Proyek Selesai" },
-    { value: 3, suffix: "+", label: "Tahun Pengalaman" },
-    { value: 5, suffix: "+", label: "Tech Stack" },
-    { value: 100, suffix: "%", label: "Passion" },
-  ],
-  techStack: [
-    "Next.js",
-    "React",
-    "TypeScript",
-    "Tailwind CSS",
-    "MySQL",
-    "Figma",
-    "Roblox Studio",
-    "Blender",
-    "Photoshop",
-    "Three.js",
+    { value: 10, suffix: "+", label: "Proyek Selesai" },
+    { value: 3, suffix: "+", label: "Tahun Eksplorasi" },
+    { value: 4, suffix: "", label: "Bidang Keahlian" },
+    { value: 100, suffix: "%", label: "Rasa Ingin Tahu" },
   ],
 } as const;
 
 export const NAV_LINKS = [
   { label: "Home", href: "#hero" },
   { label: "About", href: "#about" },
+  { label: "Skills", href: "#skills" },
   { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
 ] as const;
@@ -64,9 +55,3 @@ export const SOCIAL_LINKS = [
   { label: "LinkedIn", href: "https://linkedin.com/in/daffagyanza", icon: "linkedin" },
   { label: "Email", href: "mailto:daffagyanza@gmail.com", icon: "email" },
 ] as const;
-
-export const PARTICLE_CONFIG = {
-  count: 120,
-  spread: 20,
-  colors: ["#8b5cf6", "#06b6d4", "#6366f1"] as const,
-} as const;

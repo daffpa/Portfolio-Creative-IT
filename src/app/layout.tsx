@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 // ============================================================
-// Font Configuration — Midnight Gradient
+// Font Configuration — Bold & Eksperimental
 // ============================================================
 
-const inter = Inter({
-  variable: "--font-inter",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -25,9 +25,9 @@ const jetbrainsMono = JetBrains_Mono({
 // ============================================================
 
 export const metadata: Metadata = {
-  title: "Daffa — Creative Developer & IT Specialist",
+  title: "Daffa — Multidisciplinary Problem Solver",
   description:
-    "Portfolio interaktif Daffa — perpaduan kreativitas desain dan keahlian teknikal. Sistem Informasi, Game Development, dan Visual Design.",
+    "Portfolio Daffa — analisis proses bisnis, analisis data, desain presentasi, dan solusi digital lintas bidang. Bold, colorful, eksperimental.",
   icons: {
     icon: "/favicon.ico",
   },
@@ -45,7 +45,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <head>
         <link

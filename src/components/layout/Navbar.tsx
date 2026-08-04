@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { NAV_LINKS } from "@/lib/constants";
 
 // ============================================================
-// Navbar — Dark Glassmorphic + Mobile Hamburger
+// Navbar — Bold Dark Glass + Mobile Hamburger
 // ============================================================
 
 export default function Navbar() {
@@ -18,7 +18,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -28,20 +27,16 @@ export default function Navbar() {
     <>
       <motion.nav
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-16 px-6 md:px-12 transition-all duration-500 ${
-          isScrolled
-            ? "glass border-b border-border"
-            : "bg-transparent"
+          isScrolled ? "glass border-b border-border" : "bg-transparent"
         }`}
         initial={{ y: -80 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 120, damping: 20 }}
       >
-        {/* Brand */}
         <a href="#hero" className="font-heading text-xl font-bold tracking-tight text-text">
-          daffa<span className="gradient-text">.</span>
+          daffa<span style={{ color: "#2563ff" }}>.</span>
         </a>
 
-        {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
             <a
@@ -50,12 +45,11 @@ export default function Navbar() {
               className="font-mono text-[13px] text-text-muted uppercase tracking-widest hover:text-text transition-colors duration-300 relative group"
             >
               {link.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-gradient-to-r from-accent to-accent-cyan transition-all duration-300 group-hover:w-full" />
+              <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-blue transition-all duration-300 group-hover:w-full" />
             </a>
           ))}
         </div>
 
-        {/* Mobile Hamburger */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="md:hidden flex flex-col gap-[5px] w-7 h-7 justify-center items-center relative z-50"
@@ -76,7 +70,6 @@ export default function Navbar() {
         </button>
       </motion.nav>
 
-      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -94,7 +87,7 @@ export default function Navbar() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="font-heading text-3xl font-bold text-text hover:text-accent transition-colors"
+                className="font-heading text-3xl font-bold text-text hover:text-blue transition-colors"
               >
                 {link.label}
               </motion.a>

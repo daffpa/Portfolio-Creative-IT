@@ -1,29 +1,40 @@
 @import "tailwindcss";
 
 /* ============================================================
-   Midnight Gradient — Dark Cinematic Theme
+   DAFFA — Bold, Colorful & Eksperimental Theme
    Tailwind CSS v4 theme configuration
    ============================================================ */
 
 @theme inline {
-  /* ---- Dark Color Palette ---- */
-  --color-bg: #0a0a0f;
-  --color-bg-surface: #141419;
-  --color-bg-elevated: #1a1a22;
-  --color-bg-card: #16161e;
+  /* ---- Bold Color Palette ---- */
+  --color-bg: #0d0d12;
+  --color-bg-surface: #13131a;
+  --color-bg-elevated: #1a1a24;
+  --color-bg-card: #15151f;
 
-  --color-accent: #7c5cff;
-  --color-accent-light: #a78bfa;
-  --color-accent-cyan: #00d4ff;
-  --color-accent-pink: #ff6b9d;
+  /* Multi-color accents */
+  --color-blue: #2563ff;
+  --color-coral: #ff4757;
+  --color-lime: #48ff91;
+  --color-amber: #ffc23a;
+  --color-pink: #ff2d87;
+  --color-purple: #a855f7;
 
+  /* Accent aliases */
+  --color-accent: #2563ff;
+  --color-accent-light: #60a5fa;
+  --color-accent-cyan: #48ff91;
+  --color-accent-pink: #ff2d87;
+
+  /* Text */
   --color-text: #f0f0f5;
-  --color-text-muted: #8888a0;
+  --color-text-muted: #9494b0;
   --color-text-dim: #555570;
 
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-hover: rgba(255, 255, 255, 0.12);
-  --color-glass: rgba(20, 20, 25, 0.7);
+  /* Borders */
+  --color-border: rgba(255, 255, 255, 0.07);
+  --color-border-hover: rgba(255, 255, 255, 0.15);
+  --color-glass: rgba(20, 20, 30, 0.75);
   --color-glass-border: rgba(255, 255, 255, 0.08);
 
   /* ---- Border Radius ---- */
@@ -33,12 +44,12 @@
   --radius-full: 9999px;
 
   /* ---- Spacing ---- */
-  --spacing-section: 120px;
+  --spacing-section: 100px;
   --spacing-container: 1200px;
   --spacing-gutter: 24px;
 
   /* ---- Typography ---- */
-  --font-heading: var(--font-inter), "Inter", sans-serif;
+  --font-heading: var(--font-space-grotesk), "Space Grotesk", sans-serif;
   --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", monospace;
 }
 
@@ -58,7 +69,7 @@ body {
 }
 
 ::selection {
-  background: var(--color-accent);
+  background: var(--color-blue);
   color: white;
 }
 
@@ -66,32 +77,39 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--color-bg); }
 ::-webkit-scrollbar-thumb { background: var(--color-text-dim); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-blue); }
 
 /* ============================================================
-   Gradient Utilities
+   Gradient & Color Utilities
    ============================================================ */
 
 .gradient-text {
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-cyan) 50%, var(--color-accent-pink) 100%);
+  background: linear-gradient(135deg, var(--color-blue) 0%, var(--color-lime) 50%, var(--color-amber) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .gradient-text-animated {
-  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-cyan), var(--color-accent-pink), var(--color-accent));
-  background-size: 300% 100%;
+  background: linear-gradient(90deg, var(--color-coral), var(--color-amber), var(--color-lime), var(--color-blue), var(--color-pink));
+  background-size: 400% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradient-shift 4s ease infinite;
+  animation: gradient-shift 5s ease infinite;
 }
 
 @keyframes gradient-shift {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
+
+/* Per-letter bold colors */
+.color-blue { color: var(--color-blue); -webkit-text-fill-color: var(--color-blue); }
+.color-coral { color: var(--color-coral); -webkit-text-fill-color: var(--color-coral); }
+.color-lime { color: var(--color-lime); -webkit-text-fill-color: var(--color-lime); }
+.color-amber { color: var(--color-amber); -webkit-text-fill-color: var(--color-amber); }
+.color-pink { color: var(--color-pink); -webkit-text-fill-color: var(--color-pink); }
 
 /* ============================================================
    Glass Morphism
@@ -113,13 +131,11 @@ body {
 
 .glass-card:hover {
   border-color: var(--color-border-hover);
-  box-shadow:
-    0 0 0 1px rgba(124, 92, 255, 0.1),
-    0 20px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 /* ============================================================
-   Animated Background Noise
+   Background Noise
    ============================================================ */
 
 .bg-noise {
@@ -147,7 +163,6 @@ body {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: var(--color-accent);
   opacity: 0;
   animation: float-up linear infinite;
 }
@@ -227,10 +242,6 @@ body {
    Glow Effects
    ============================================================ */
 
-.glow-accent {
-  box-shadow: 0 0 60px -12px rgba(124, 92, 255, 0.4);
-}
-
 .glow-border {
   position: relative;
 }
@@ -241,7 +252,7 @@ body {
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, var(--color-accent), transparent 40%, transparent 60%, var(--color-accent-cyan));
+  background: linear-gradient(135deg, var(--color-blue), transparent 40%, transparent 60%, var(--color-lime));
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
@@ -255,7 +266,19 @@ body {
 }
 
 /* ============================================================
-   Section Divider
+   Bold Decorative Elements
+   ============================================================ */
+
+.bold-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Section Label
    ============================================================ */
 
 .section-label {
@@ -264,4 +287,37 @@ body {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--color-text-dim);
+}
+
+/* ============================================================
+   Skill Card Category Colors
+   ============================================================ */
+
+.skill-card-blue { border-color: rgba(37, 99, 255, 0.3); }
+.skill-card-blue:hover { border-color: rgba(37, 99, 255, 0.6); box-shadow: 0 0 30px -8px rgba(37, 99, 255, 0.2); }
+
+.skill-card-coral { border-color: rgba(255, 71, 87, 0.3); }
+.skill-card-coral:hover { border-color: rgba(255, 71, 87, 0.6); box-shadow: 0 0 30px -8px rgba(255, 71, 87, 0.2); }
+
+.skill-card-lime { border-color: rgba(72, 255, 145, 0.3); }
+.skill-card-lime:hover { border-color: rgba(72, 255, 145, 0.6); box-shadow: 0 0 30px -8px rgba(72, 255, 145, 0.2); }
+
+.skill-card-amber { border-color: rgba(255, 194, 58, 0.3); }
+.skill-card-amber:hover { border-color: rgba(255, 194, 58, 0.6); box-shadow: 0 0 30px -8px rgba(255, 194, 58, 0.2); }
+
+/* ============================================================
+   Progress Bar
+   ============================================================ */
+
+.skill-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.skill-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
