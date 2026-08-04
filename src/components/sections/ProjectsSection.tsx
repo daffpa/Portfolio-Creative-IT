@@ -3,6 +3,7 @@
 import { motion, Variants, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { projects, PROJECT_CATEGORIES, type ProjectCategory } from "@/data/projects";
+import Link from "next/link";
 
 // ============================================================
 // ProjectsSection — Colorful Cards + Category Filter + Detail
@@ -229,16 +230,22 @@ export default function ProjectsSection() {
                   </AnimatePresence>
 
                   {/* Actions */}
-                  <div className="flex gap-3 mt-auto">
+                  <div className="flex flex-wrap gap-2.5 mt-auto pt-3 border-t border-border/50">
+                    <Link
+                      href={`/projects/${project.id}`}
+                      className="flex-1 py-2.5 px-3 text-center font-mono text-xs uppercase tracking-wider rounded-lg border transition-all hover:scale-[1.02]"
+                      style={{ borderColor: `${catColor}40`, color: catColor, background: `${catColor}15` }}
+                    >
+                      Studi Kasus ↗
+                    </Link>
                     {project.liveUrl && (
                       <a
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 py-2.5 text-center font-mono text-xs uppercase tracking-wider rounded-lg border transition-all"
-                        style={{ borderColor: `${catColor}30`, color: catColor, background: `${catColor}10` }}
+                        className="py-2.5 px-3 text-center font-mono text-xs uppercase tracking-wider rounded-lg border border-border text-text-muted hover:text-text hover:border-border-hover transition-all"
                       >
-                        Live Demo
+                        Demo
                       </a>
                     )}
                     {project.repoUrl && (
@@ -246,15 +253,10 @@ export default function ProjectsSection() {
                         href={project.repoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 py-2.5 text-center font-mono text-xs uppercase tracking-wider rounded-lg border border-border text-text-muted hover:border-border-hover hover:text-text transition-all"
+                        className="py-2.5 px-3 text-center font-mono text-xs uppercase tracking-wider rounded-lg border border-border text-text-muted hover:text-text hover:border-border-hover transition-all"
                       >
-                        Source Code
+                        GitHub
                       </a>
-                    )}
-                    {!project.liveUrl && !project.repoUrl && !project.context && (
-                      <div className="flex-1 py-2.5 text-center font-mono text-xs uppercase tracking-wider rounded-lg border border-border text-text-dim">
-                        Coming Soon
-                      </div>
                     )}
                   </div>
                 </div>
