@@ -73,6 +73,7 @@ export const projects: Project[] = [
     category: "desain-visual",
     image: "",
     tags: ["Next.js", "Three.js", "Framer Motion", "Tailwind"],
+    repoUrl: "https://github.com/daffpa/Portfolio-Creative-IT",
     featured: true,
     year: "2026",
   },

@@ -215,6 +215,8 @@ body {
   background: none;
   border: none;
   font-family: var(--font-mono);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .filter-pill.active {

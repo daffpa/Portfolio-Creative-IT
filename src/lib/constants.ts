@@ -60,8 +60,8 @@ export const NAV_LINKS = [
 ] as const;
 
 export const SOCIAL_LINKS = [
-  { label: "GitHub", href: "https://github.com/", icon: "github" },
-  { label: "LinkedIn", href: "https://linkedin.com/in/", icon: "linkedin" },
+  { label: "GitHub", href: "https://github.com/daffpa", icon: "github" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/daffagyanza", icon: "linkedin" },
   { label: "Email", href: "mailto:daffagyanza@gmail.com", icon: "email" },
 ] as const;
 

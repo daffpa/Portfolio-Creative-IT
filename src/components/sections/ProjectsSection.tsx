@@ -60,7 +60,7 @@ export default function ProjectsSection() {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-wrap gap-2 mb-12"
+          className="flex gap-2 mb-12 overflow-x-auto max-w-full pb-2 scrollbar-none flex-nowrap sm:flex-wrap"
         >
           {PROJECT_CATEGORIES.map((cat) => (
             <button

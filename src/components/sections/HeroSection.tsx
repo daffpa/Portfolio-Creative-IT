@@ -88,15 +88,15 @@ export default function HeroSection() {
             style={{
               left: `${8 + i * 8}%`,
               animationDelay: `${i * 1.5}s`,
-              animationDuration: `${8 + Math.random() * 6}s`,
+              animationDuration: `${8 + ((i * 3) % 7)}s`,
               background:
                 i % 3 === 0
                   ? "var(--color-accent)"
                   : i % 3 === 1
                     ? "var(--color-accent-cyan)"
                     : "var(--color-accent-pink)",
-              width: `${2 + Math.random() * 3}px`,
-              height: `${2 + Math.random() * 3}px`,
+              width: `${2 + (i % 3)}px`,
+              height: `${2 + (i % 3)}px`,
             }}
           />
         ))}
