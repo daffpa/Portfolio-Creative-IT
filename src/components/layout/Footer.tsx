@@ -1,9 +1,11 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { SOCIAL_LINKS } from "@/lib/constants";
 
 // ============================================================
-// Footer — Minimalist Dark with Color Accent
+// Footer — Fade-in on Scroll + Hover Scale Icons
+// Inspired by 21st.dev Footers
 // ============================================================
 
 const socialIcons: Record<string, string> = {
@@ -12,35 +14,68 @@ const socialIcons: Record<string, string> = {
   email: "M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z",
 };
 
+const socialColors: Record<string, string> = {
+  github: "#f0f0f5",
+  linkedin: "#2563ff",
+  email: "#ff4757",
+};
+
 export default function Footer() {
   return (
-    <footer className="relative border-t border-border py-8 px-6 md:px-12">
+    <motion.footer
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="relative border-t border-border py-8 px-6 md:px-12"
+    >
       <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-        <a href="#hero" className="font-heading text-lg font-bold text-text">
+        <motion.a
+          href="#hero"
+          className="font-heading text-lg font-bold text-text"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           daffa<span style={{ color: "#2563ff" }}>.</span>
-        </a>
+        </motion.a>
 
         <div className="flex items-center gap-5">
-          {SOCIAL_LINKS.map((link) => (
-            <a
+          {SOCIAL_LINKS.map((link, i) => (
+            <motion.a
               key={link.label}
               href={link.href}
               target={link.icon === "email" ? undefined : "_blank"}
               rel="noopener noreferrer"
-              className="text-text-dim hover:text-blue transition-colors duration-300"
+              className="text-text-dim transition-colors duration-300"
               aria-label={link.label}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.4 }}
+              whileHover={{
+                scale: 1.25,
+                color: socialColors[link.icon],
+                transition: { type: "spring", stiffness: 400, damping: 10 },
+              }}
+              whileTap={{ scale: 0.9 }}
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d={socialIcons[link.icon]} />
               </svg>
-            </a>
+            </motion.a>
           ))}
         </div>
 
-        <p className="font-mono text-[11px] text-text-dim">
+        <motion.p
+          className="font-mono text-[11px] text-text-dim"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+        >
           © {new Date().getFullYear()} Daffa. All rights reserved.
-        </p>
+        </motion.p>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

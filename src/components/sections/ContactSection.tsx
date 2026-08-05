@@ -1,10 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { SOCIAL_LINKS } from "@/lib/constants";
+import { useRef, useState } from "react";
 
 // ============================================================
-// ContactSection — Bold Split Layout + Colorful Social Cards
+// ContactSection — Magnetic Button + Slide-in Socials + Ripple
+// Inspired by 21st.dev CTA sections
 // ============================================================
 
 const socialIcons: Record<string, string> = {
@@ -19,14 +21,65 @@ const socialColors: Record<string, string> = {
   email: "#ff4757",
 };
 
+function MagneticButton({ children, className, ...props }: { children: React.ReactNode; className?: string } & Omit<React.ComponentProps<typeof motion.button>, 'children'>) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const springX = useSpring(x, { stiffness: 200, damping: 15 });
+  const springY = useSpring(y, { stiffness: 200, damping: 15 });
+  const ref = useRef<HTMLButtonElement>(null);
+  const [ripple, setRipple] = useState<{ x: number; y: number } | null>(null);
+
+  const handleMouse = (e: React.MouseEvent) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const dx = e.clientX - (rect.left + rect.width / 2);
+    const dy = e.clientY - (rect.top + rect.height / 2);
+    x.set(dx * 0.2);
+    y.set(dy * 0.2);
+  };
+
+  const handleLeave = () => { x.set(0); y.set(0); };
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    setRipple({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    setTimeout(() => setRipple(null), 600);
+  };
+
+  return (
+    <motion.button
+      ref={ref}
+      style={{ x: springX, y: springY }}
+      onMouseMove={handleMouse}
+      onMouseLeave={handleLeave}
+      onClick={handleClick}
+      whileTap={{ scale: 0.97 }}
+      className={`relative overflow-hidden ${className}`}
+      {...props}
+    >
+      {ripple && (
+        <motion.span
+          className="absolute rounded-full bg-white/20 pointer-events-none"
+          style={{ left: ripple.x, top: ripple.y }}
+          initial={{ width: 0, height: 0, x: 0, y: 0, opacity: 0.5 }}
+          animate={{ width: 300, height: 300, x: -150, y: -150, opacity: 0 }}
+          transition={{ duration: 0.6 }}
+        />
+      )}
+      {children}
+    </motion.button>
+  );
+}
+
 export default function ContactSection() {
   return (
     <section id="contact" className="relative py-section">
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Section Label */}
         <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           className="section-label mb-4"
         >
@@ -36,10 +89,10 @@ export default function ContactSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
           {/* Left */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: -30, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col justify-center"
           >
             <h2 className="font-heading text-3xl md:text-5xl font-bold text-text mb-6 leading-tight">
@@ -51,7 +104,7 @@ export default function ContactSection() {
               Saya selalu terbuka untuk diskusi, kolaborasi, atau sekadar bertukar perspektif. Jangan ragu untuk menghubungi.
             </p>
 
-            {/* Social Cards */}
+            {/* Slide-in Social Cards */}
             <div className="flex flex-col gap-3">
               {SOCIAL_LINKS.map((link, i) => (
                 <motion.a
@@ -59,31 +112,40 @@ export default function ContactSection() {
                   href={link.href}
                   target={link.icon === "email" ? undefined : "_blank"}
                   rel="noopener noreferrer"
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, x: -40, filter: "blur(6px)" }}
+                  whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  whileHover={{ x: 6 }}
-                  className="flex items-center gap-4 px-5 py-4 rounded-xl border border-border hover:bg-bg-elevated transition-all duration-300 group"
-                  style={{ ["--hover-color" as string]: socialColors[link.icon] }}
+                  transition={{
+                    delay: i * 0.12,
+                    type: "spring",
+                    stiffness: 120,
+                    damping: 14,
+                  }}
+                  whileHover={{
+                    x: 8,
+                    borderColor: `${socialColors[link.icon]}40`,
+                    boxShadow: `0 0 20px -6px ${socialColors[link.icon]}30`,
+                  }}
+                  className="flex items-center gap-4 px-5 py-4 rounded-xl border border-border hover:bg-bg-elevated transition-colors duration-300 group"
                 >
                   <svg
                     className="w-5 h-5 text-text-muted group-hover:text-white transition-colors"
                     fill="currentColor"
                     viewBox="0 0 24 24"
-                    style={{ color: undefined }}
                   >
                     <path d={socialIcons[link.icon]} />
                   </svg>
                   <span className="font-mono text-sm text-text-muted group-hover:text-text transition-colors">
                     {link.label}
                   </span>
-                  <span
-                    className="ml-auto font-mono text-xs transition-colors"
+                  <motion.span
+                    className="ml-auto font-mono text-xs"
                     style={{ color: socialColors[link.icon] }}
+                    animate={{ x: [0, 3, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
                   >
                     →
-                  </span>
+                  </motion.span>
                 </motion.a>
               ))}
             </div>
@@ -91,10 +153,10 @@ export default function ContactSection() {
 
           {/* Right: Form */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: 30, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
             <form
               action="mailto:daffagyanza@gmail.com"
@@ -102,7 +164,12 @@ export default function ContactSection() {
               encType="text/plain"
               className="glass-card p-8 rounded-2xl space-y-6"
             >
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+              >
                 <label className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">
                   Nama
                 </label>
@@ -112,8 +179,13 @@ export default function ContactSection() {
                   placeholder="Nama lengkap Anda"
                   className="w-full bg-bg-elevated border border-border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none focus:border-blue/50 focus:ring-1 focus:ring-blue/20 transition-all placeholder:text-text-dim"
                 />
-              </div>
-              <div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 }}
+              >
                 <label className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">
                   Email
                 </label>
@@ -123,8 +195,13 @@ export default function ContactSection() {
                   placeholder="email@contoh.com"
                   className="w-full bg-bg-elevated border border-border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none focus:border-blue/50 focus:ring-1 focus:ring-blue/20 transition-all placeholder:text-text-dim"
                 />
-              </div>
-              <div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5 }}
+              >
                 <label className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">
                   Pesan
                 </label>
@@ -134,15 +211,13 @@ export default function ContactSection() {
                   rows={5}
                   className="w-full bg-bg-elevated border border-border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none focus:border-blue/50 focus:ring-1 focus:ring-blue/20 transition-all placeholder:text-text-dim resize-none"
                 />
-              </div>
-              <motion.button
+              </motion.div>
+              <MagneticButton
                 type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
                 className="w-full py-4 rounded-xl bg-blue text-white font-heading font-semibold text-sm tracking-wide shadow-lg shadow-blue/25 hover:shadow-blue/40 transition-shadow"
               >
                 Kirim Pesan
-              </motion.button>
+              </MagneticButton>
             </form>
           </motion.div>
         </div>
