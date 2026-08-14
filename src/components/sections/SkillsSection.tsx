@@ -136,7 +136,7 @@ export default function SkillsSection() {
           viewport={{ once: true }}
           className="section-label mb-4"
         >
-          02 — Kompetensi
+          03 — Kompetensi
         </motion.p>
 
         {/* Heading */}
@@ -159,7 +159,7 @@ export default function SkillsSection() {
           transition={{ delay: 0.1, duration: 0.5 }}
           className="font-mono text-sm text-text-muted max-w-xl mb-12"
         >
-          Dari analisis proses bisnis hingga visualisasi data dan desain presentasi — dikelompokkan berdasarkan domain keahlian.
+          Dari desain grafis & branding hingga strategi media sosial dan leadership — dikelompokkan berdasarkan domain keahlian.
         </motion.p>
 
         {/* 3D Tilt Skill Cards */}

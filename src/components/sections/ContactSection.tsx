@@ -83,7 +83,7 @@ export default function ContactSection() {
           viewport={{ once: true }}
           className="section-label mb-4"
         >
-          04 — Kontak
+          05 — Kontak
         </motion.p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">

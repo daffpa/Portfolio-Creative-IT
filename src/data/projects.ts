@@ -9,9 +9,9 @@
 
 export type ProjectCategory =
   | "all"
+  | "desain-branding"
+  | "social-media"
   | "analisis-bisnis"
-  | "analisis-data"
-  | "presentasi"
   | "lainnya";
 
 export interface Project {
@@ -38,7 +38,7 @@ export interface Project {
 //   id: "project-unique-id",
 //   title: "Nama Proyek",
 //   description: "Deskripsi singkat proyek Anda...",
-//   category: "analisis-bisnis",
+//   category: "desain-branding",
 //   image: "",
 //   tags: ["Tool1", "Tool2"],
 //   context: "Masalah yang dihadapi...",
@@ -56,13 +56,80 @@ export const PROJECT_CATEGORIES: {
   color: string;
 }[] = [
   { value: "all", label: "Semua", color: "#f0f0f5" },
-  { value: "analisis-bisnis", label: "Analisis Bisnis", color: "#2563ff" },
-  { value: "analisis-data", label: "Analisis Data", color: "#48ff91" },
-  { value: "presentasi", label: "Presentasi", color: "#ffc23a" },
-  { value: "lainnya", label: "Lainnya", color: "#ff2d87" },
+  { value: "desain-branding", label: "Desain & Branding", color: "#2563ff" },
+  { value: "social-media", label: "Social Media", color: "#ff2d87" },
+  { value: "analisis-bisnis", label: "Analisis Bisnis", color: "#ffc23a" },
+  { value: "lainnya", label: "Lainnya", color: "#48ff91" },
 ];
 
 export const projects: Project[] = [
+  // ── Pengalaman Kerja sebagai Art Director ──────────────────
+  {
+    id: "perwira-media-art-director",
+    title: "Art Direction — PT. Perwira Media Kreatif",
+    description:
+      "Mengarahkan aspek visual seluruh kampanye iklan perusahaan — mulai dari konsep kreatif, pemilihan elemen desain, fotografi, hingga tata letak final yang selaras dengan identitas brand.",
+    category: "desain-branding",
+    image: "",
+    tags: ["Art Direction", "Advertising", "Branding", "Layout Design", "Photography"],
+    context: "Perusahaan media kreatif membutuhkan arahan visual yang kuat dan konsisten untuk kampanye iklan multi-platform.",
+    role: "Art Director — memimpin tim kreatif dalam menentukan visual direction, menyetujui desain akhir, dan memastikan kualitas output.",
+    process: "Brief klien → Riset visual & moodboard → Konsep kreatif → Supervisi produksi → Quality control → Delivery.",
+    result: "Menghasilkan materi iklan dengan konsistensi visual yang tinggi, meningkatkan engagement brand di berbagai platform.",
+    featured: true,
+    year: "2023",
+  },
+  {
+    id: "funworld-art-director",
+    title: "Art Direction — PT. FunWorld Prima",
+    description:
+      "Merancang dan mengarahkan seluruh aspek visual kampanye poster dan promosi perusahaan hiburan — menciptakan identitas visual yang playful dan memorable.",
+    category: "desain-branding",
+    image: "",
+    tags: ["Art Direction", "Poster Design", "Visual Campaign", "Branding"],
+    context: "Perusahaan entertainment membutuhkan materi promosi yang eye-catching dan konsisten dengan brand personality yang fun dan energik.",
+    role: "Art Director — mengonsep dan mengarahkan desain poster, campaign visual, dan materi promosi lainnya.",
+    process: "Analisis brand → Konsep visual → Sketch & layout → Produksi desain → Review & iterasi.",
+    result: "Berhasil menciptakan serangkaian poster dan materi promosi yang meningkatkan brand awareness dan traffic pengunjung.",
+    featured: true,
+    year: "2022",
+  },
+
+  // ── Proyek Desain & Branding ──────────────────────────────
+  {
+    id: "brand-identity-project",
+    title: "Brand Identity Design System",
+    description:
+      "Perancangan sistem identitas visual lengkap untuk sebuah brand — termasuk logo, palet warna, tipografi, dan brand guidelines yang komprehensif.",
+    category: "desain-branding",
+    image: "",
+    tags: ["Branding", "Logo Design", "Figma", "Adobe Illustrator", "Guidelines"],
+    context: "Klien membutuhkan identitas visual baru yang modern dan dapat diterapkan secara konsisten di semua touchpoint.",
+    role: "Brand Designer — merancang seluruh elemen identitas visual dari nol.",
+    process: "Brand discovery → Moodboard & referensi → Eksplorasi logo → Palet & tipografi → Brand book final.",
+    result: "Identitas visual baru yang koheren dan mudah diaplikasikan, meningkatkan profesionalisme brand di mata konsumen.",
+    featured: true,
+    year: "2024",
+  },
+
+  // ── Social Media ──────────────────────────────────────────
+  {
+    id: "social-media-strategy",
+    title: "Strategi Konten YouTube Shorts & TikTok",
+    description:
+      "Merancang dan mengeksekusi strategi konten video pendek untuk platform YouTube Shorts dan TikTok — dari ideasi hingga analisis performa.",
+    category: "social-media",
+    image: "",
+    tags: ["YouTube Shorts", "TikTok", "Content Strategy", "Video Editing", "Analytics"],
+    context: "Brand ingin meningkatkan awareness dan engagement di platform video pendek yang sedang trending.",
+    role: "Social Media Strategist — merancang content pillar, kalender konten, dan menganalisis metrics.",
+    process: "Riset tren → Content pillar → Produksi batch → Scheduling → Analisis & optimasi.",
+    result: "Peningkatan signifikan dalam views dan followers melalui konten yang relevan dan konsisten.",
+    featured: true,
+    year: "2024",
+  },
+
+  // ── Analisis Bisnis ───────────────────────────────────────
   {
     id: "bpmn-morowali",
     title: "Analisis Proses Bisnis Morowali",
@@ -75,39 +142,10 @@ export const projects: Project[] = [
     role: "Business Process Analyst — memetakan proses AS-IS, mengidentifikasi bottleneck, dan merancang proses TO-BE.",
     process: "Wawancara stakeholder → Dokumentasi AS-IS → Analisis gap → Rancang TO-BE → Validasi dengan tim.",
     result: "Berhasil mengidentifikasi 5 bottleneck utama dan mengusulkan alur baru yang memangkas waktu proses hingga 30%.",
-    featured: true,
     year: "2026",
   },
-  {
-    id: "dashboard-penjualan",
-    title: "Dashboard Analisis Penjualan",
-    description:
-      "Dashboard interaktif untuk menganalisis tren penjualan, segmentasi pelanggan, dan performa produk dari data raw perusahaan retail.",
-    category: "analisis-data",
-    image: "",
-    tags: ["Excel", "Google Sheets", "Data Visualization", "Pivot Table"],
-    context: "Data penjualan tersedia dalam spreadsheet mentah tanpa visualisasi, sulit bagi manajemen untuk mengambil keputusan.",
-    role: "Data Analyst — membersihkan data, membuat pivot table, dan merancang dashboard visual.",
-    process: "Data cleaning → Pivot analysis → Membuat chart/visualisasi → Menyusun laporan insight.",
-    result: "Dashboard mengungkap bahwa 3 produk tertentu menyumbang 60% revenue — insight yang sebelumnya tidak terlihat.",
-    featured: true,
-    year: "2026",
-  },
-  {
-    id: "presentasi-proposal",
-    title: "Desain Presentasi Proposal Bisnis",
-    description:
-      "Desain slide deck profesional untuk proposal bisnis dengan storytelling visual yang kuat, digunakan dalam pitch ke investor.",
-    category: "presentasi",
-    image: "",
-    tags: ["PowerPoint", "Canva", "Storytelling", "Visual Design"],
-    context: "Tim membutuhkan presentasi yang meyakinkan untuk mempresentasikan ide bisnis ke panel juri kompetisi.",
-    role: "Presentation Designer — merancang narasi visual, layout slide, dan infografis pendukung.",
-    process: "Brief content → Susun storyline → Desain master slide → Infografis data → Review & revisi.",
-    result: "Presentasi berhasil menarik perhatian juri dan tim lolos ke babak final kompetisi.",
-    featured: true,
-    year: "2025",
-  },
+
+  // ── Proyek Lainnya ────────────────────────────────────────
   {
     id: "webgis-morowali",
     title: "WebGIS Morowali",
@@ -118,31 +156,30 @@ export const projects: Project[] = [
     tags: ["Next.js", "Leaflet", "TypeScript", "GeoAI"],
     context: "Data geospasial wilayah tidak terintegrasi dan sulit diakses oleh publik maupun pemerintah daerah.",
     role: "Full-stack Developer — membangun frontend peta interaktif dan integrasi data geospasial.",
-    featured: true,
     year: "2026",
   },
   {
     id: "portfolio-website",
     title: "Portfolio Website Eksperimental",
     description:
-      "Website portofolio pribadi dengan desain bold, colorful, dan eksperimental. Dibangun sebagai ekspresi identitas digital.",
+      "Website portofolio pribadi dengan desain bold, colorful, dan eksperimental. Dibangun sebagai ekspresi identitas digital dan personal branding.",
     category: "lainnya",
     image: "",
-    tags: ["Next.js", "Framer Motion", "Tailwind CSS", "TypeScript"],
+    tags: ["Next.js", "Framer Motion", "TypeScript", "Creative Design"],
     repoUrl: "https://github.com/daffpa/Portfolio-Creative-IT",
     year: "2026",
   },
   {
-    id: "analisis-survei",
-    title: "Analisis Hasil Survei Kepuasan",
+    id: "himpunan-humas",
+    title: "Publikasi & Branding Himpunan Mahasiswa",
     description:
-      "Pengolahan dan analisis data survei kepuasan pengguna layanan kampus menggunakan teknik statistik deskriptif dan visualisasi.",
-    category: "analisis-data",
+      "Mengelola komunikasi, relasi publik, dan identitas visual organisasi mahasiswa — merancang materi publikasi untuk event dan kegiatan kampus.",
+    category: "desain-branding",
     image: "",
-    tags: ["SPSS", "Google Forms", "Statistik", "Data Cleaning"],
-    context: "Kampus mengumpulkan data survei tapi belum pernah dianalisis secara sistematis.",
-    role: "Data Analyst — merancang kuesioner, mengolah data, dan menyajikan temuan.",
-    result: "Menemukan bahwa aspek 'kecepatan respon' memiliki skor terendah — menjadi rekomendasi prioritas perbaikan.",
+    tags: ["Public Relations", "Event Branding", "Social Media", "Canva"],
+    context: "Himpunan membutuhkan strategi komunikasi dan branding yang lebih profesional untuk meningkatkan engagement mahasiswa.",
+    role: "Humas — mengelola seluruh materi komunikasi, desain publikasi, dan strategi branding organisasi.",
+    result: "Meningkatkan partisipasi mahasiswa dalam kegiatan himpunan melalui branding dan komunikasi yang lebih menarik.",
     year: "2025",
   },
 ];

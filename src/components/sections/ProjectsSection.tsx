@@ -32,7 +32,7 @@ export default function ProjectsSection() {
           viewport={{ once: true }}
           className="section-label mb-4"
         >
-          03 — Proyek
+          04 — Proyek
         </motion.p>
 
         {/* Heading */}
