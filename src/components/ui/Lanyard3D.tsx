@@ -25,6 +25,13 @@ function Band() {
   const j2 = useRef<any>(null);
   const j3 = useRef<any>(null);
   const card = useRef<any>(null);
+  const isDragging = useRef(false);
+
+  useEffect(() => {
+    const handleUp = () => { isDragging.current = false; };
+    window.addEventListener('pointerup', handleUp);
+    return () => window.removeEventListener('pointerup', handleUp);
+  }, []);
 
   const vec = new THREE.Vector3();
   const dir = new THREE.Vector3();
@@ -33,8 +40,8 @@ function Band() {
     type: "dynamic" as const,
     canSleep: true,
     colliders: false as const,
-    angularDamping: 2,
-    linearDamping: 2,
+    angularDamping: 4,
+    linearDamping: 4,
   };
 
   // We use spherical joints to connect the segments
@@ -76,11 +83,10 @@ function Band() {
       band.current.geometry.setPoints(curve.getPoints(32));
     }
 
-    // Drag interaction - move card based on mouse pointer
-    const isPointerDown = state.pointer.x !== 0 || state.pointer.y !== 0;
-    if (isPointerDown) {
+    // Drag interaction - move card based on mouse pointer only if clicked
+    if (isDragging.current) {
       vec.set(state.pointer.x * 2, state.pointer.y * 2, 0);
-      dir.copy(vec).sub(card.current.translation()).normalize().multiplyScalar(50);
+      dir.copy(vec).sub(card.current.translation()).normalize().multiplyScalar(40);
       card.current.applyImpulse(
         { x: dir.x * delta, y: dir.y * delta, z: dir.z * delta },
         true
@@ -103,8 +109,14 @@ function Band() {
       <RigidBody ref={j3} position={[0, 1.5, 0]} {...segmentProps}>
         <BallCollider args={[0.1]} />
       </RigidBody>
-      <RigidBody ref={card} position={[0, 0, 0]} type="dynamic" colliders="cuboid" angularDamping={2} linearDamping={2}>
-        <group position={[0, -0.2, 0]}>
+      <RigidBody ref={card} position={[0, 0, 0]} type="dynamic" colliders="cuboid" angularDamping={4} linearDamping={4}>
+        <group 
+          position={[0, -0.2, 0]}
+          onPointerDown={(e) => { e.stopPropagation(); isDragging.current = true; }}
+          onPointerUp={(e) => { e.stopPropagation(); isDragging.current = false; }}
+          onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'grab'; }}
+          onPointerOut={(e) => { e.stopPropagation(); document.body.style.cursor = 'auto'; }}
+        >
           {/* Card Body (Glass/Plastic) */}
           <mesh castShadow receiveShadow geometry={new THREE.BoxGeometry(1.4, 2.0, 0.05)}>
             <meshPhysicalMaterial 
