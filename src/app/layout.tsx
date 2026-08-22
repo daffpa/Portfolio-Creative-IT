@@ -37,6 +37,8 @@ export const metadata: Metadata = {
 // Root Layout
 // ============================================================
 
+import { ThemeProvider } from "@/components/ThemeProvider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,6 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
+      suppressHydrationWarning
       className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
       <head>
@@ -53,9 +56,11 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen relative bg-bg text-text">
-        <div className="bg-noise"></div>
-        {children}
+      <body className="min-h-screen relative bg-bg text-text transition-colors duration-300">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <div className="bg-noise"></div>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

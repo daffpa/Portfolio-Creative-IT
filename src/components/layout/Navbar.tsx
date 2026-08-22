@@ -3,11 +3,34 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { NAV_LINKS } from "@/lib/constants";
+import { useTheme } from "next-themes";
+import { Sun, Moon } from "lucide-react";
 
 // ============================================================
 // Navbar — Scroll-aware Glass + Active Indicator + Spring Menu
 // Inspired by 21st.dev Navigation
 // ============================================================
+
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return <div className="w-8 h-8" />; // Placeholder
+
+  return (
+    <button
+      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+      className="p-2 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-text-muted hover:text-text"
+      aria-label="Toggle theme"
+    >
+      {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+    </button>
+  );
+}
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -93,6 +116,7 @@ export default function Navbar() {
               )}
             </a>
           ))}
+          <ThemeToggle />
         </div>
 
         {/* Hamburger */}
@@ -128,6 +152,13 @@ export default function Navbar() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-40 bg-bg/98 backdrop-blur-xl flex flex-col items-center justify-center gap-8"
           >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="absolute top-6 right-20"
+            >
+              <ThemeToggle />
+            </motion.div>
             {NAV_LINKS.map((link, i) => (
               <motion.a
                 key={link.label}

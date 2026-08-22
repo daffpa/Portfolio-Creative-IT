@@ -67,7 +67,7 @@ function MagneticStatCard({ value, suffix, label, color, index }: {
         borderColor: `${color}50`,
         boxShadow: `0 0 30px -8px ${color}30`,
       }}
-      className="text-center px-4 py-6 glass-card rounded-xl cursor-default transition-colors"
+      className="flex flex-col items-center justify-center text-center px-4 py-6 glass-card rounded-xl cursor-default transition-colors"
     >
       <motion.div
         className="font-heading text-3xl md:text-4xl font-bold mb-1"
@@ -119,7 +119,7 @@ export default function AboutSection() {
         {/* Bio + Stats */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 mb-12">
           {/* Bio — line-by-line reveal */}
-          <div className="lg:col-span-3 space-y-6">
+          <div className="lg:col-span-3 space-y-6 flex flex-col justify-center">
             {bioLines.map((line, i) => (
               <motion.p
                 key={i}
@@ -131,7 +131,7 @@ export default function AboutSection() {
                   duration: 0.6,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="font-mono text-sm md:text-base text-text-muted leading-[1.9]"
+                className="font-mono text-sm md:text-base text-text-muted leading-[1.9] text-justify md:text-left"
               >
                 {line}
               </motion.p>

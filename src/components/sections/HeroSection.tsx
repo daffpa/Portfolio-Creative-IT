@@ -219,7 +219,7 @@ export default function HeroSection() {
             variants={containerVariants}
             initial="hidden"
             animate="show"
-            className="flex flex-col items-center"
+            className="flex flex-col items-center lg:items-start"
           >
             {/* Headline */}
             <motion.h1
@@ -231,7 +231,7 @@ export default function HeroSection() {
             </motion.h1>
 
             {/* Typewriter */}
-            <motion.div variants={fadeUpVariant} className="h-8 flex items-center justify-center mb-8">
+            <motion.div variants={fadeUpVariant} className="h-8 flex items-center justify-center lg:justify-start mb-8">
               <span className="font-mono text-base md:text-lg text-text-muted tracking-widest">
                 {displayText}
               </span>
@@ -245,7 +245,7 @@ export default function HeroSection() {
             {/* Description */}
             <motion.p
               variants={fadeUpVariant}
-              className="font-mono text-sm text-text-muted max-w-lg leading-relaxed mb-10"
+              className="font-mono text-sm text-text-muted max-w-lg leading-relaxed mb-10 text-center lg:text-left"
             >
               {HERO_CONTENT.subheadline}
             </motion.p>

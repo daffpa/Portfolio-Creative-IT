@@ -2,7 +2,6 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
-import Image from "next/image";
 
 export default function HeroBadge() {
   const ref = useRef<HTMLDivElement>(null);
@@ -74,13 +73,10 @@ export default function HeroBadge() {
 
         {/* Photo Container */}
         <div className="absolute inset-[8px] rounded-[1.75rem] overflow-hidden z-10" style={{ transform: "translateZ(30px)" }}>
-          <Image
+          <img
             src="/images/profile.png"
             alt="Daffa Gusti Yanza"
-            fill
-            className="object-cover object-center"
-            sizes="(max-width: 768px) 300px, 350px"
-            priority
+            className="w-full h-full object-cover object-center pointer-events-none"
           />
         </div>
 

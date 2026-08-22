@@ -6,13 +6,12 @@
    ============================================================ */
 
 @theme inline {
-  /* ---- Bold Color Palette ---- */
-  --color-bg: #0d0d12;
-  --color-bg-surface: #13131a;
-  --color-bg-elevated: #1a1a24;
-  --color-bg-card: #15151f;
+  /* Colors will be sourced from standard CSS variables */
+  --color-bg: var(--bg);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-card: var(--bg-card);
 
-  /* Multi-color accents */
   --color-blue: #2563ff;
   --color-coral: #ff4757;
   --color-lime: #48ff91;
@@ -20,22 +19,19 @@
   --color-pink: #ff2d87;
   --color-purple: #a855f7;
 
-  /* Accent aliases */
   --color-accent: #2563ff;
   --color-accent-light: #60a5fa;
   --color-accent-cyan: #48ff91;
   --color-accent-pink: #ff2d87;
 
-  /* Text */
-  --color-text: #f0f0f5;
-  --color-text-muted: #9494b0;
-  --color-text-dim: #555570;
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-dim: var(--text-dim);
 
-  /* Borders */
-  --color-border: rgba(255, 255, 255, 0.07);
-  --color-border-hover: rgba(255, 255, 255, 0.15);
-  --color-glass: rgba(20, 20, 30, 0.75);
-  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
+  --color-glass: var(--glass);
+  --color-glass-border: var(--glass-border);
 
   /* ---- Border Radius ---- */
   --radius-DEFAULT: 12px;
@@ -51,6 +47,44 @@
   /* ---- Typography ---- */
   --font-heading: var(--font-space-grotesk), "Space Grotesk", sans-serif;
   --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", monospace;
+}
+
+/* ============================================================
+   Theme Variables
+   ============================================================ */
+
+:root {
+  /* Light Mode */
+  --bg: #f8fafc;
+  --bg-surface: #f1f5f9;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-dim: #94a3b8;
+
+  --border: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(0, 0, 0, 0.15);
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.08);
+}
+
+.dark {
+  /* Dark Mode */
+  --bg: #0d0d12;
+  --bg-surface: #13131a;
+  --bg-elevated: #1a1a24;
+  --bg-card: #15151f;
+
+  --text: #f0f0f5;
+  --text-muted: #9494b0;
+  --text-dim: #555570;
+
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  --glass: rgba(20, 20, 30, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
 }
 
 /* ============================================================
