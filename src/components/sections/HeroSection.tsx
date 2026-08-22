@@ -3,9 +3,7 @@
 import { motion, useMotionValue, useSpring, useScroll, useTransform } from "framer-motion";
 import { HERO_CONTENT, TYPEWRITER_ROLES } from "@/lib/constants";
 import { useState, useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
-
-const Lanyard3D = dynamic(() => import("@/components/ui/Lanyard3D"), { ssr: false });
+import HeroBadge from "@/components/ui/HeroBadge";
 
 // ============================================================
 // HeroSection — Spring Text Reveal + Cursor Glow + Scroll Parallax
@@ -276,9 +274,9 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Right column for 3D Lanyard */}
+        {/* Right column for 3D Badge */}
         <div className="order-1 lg:order-2 w-full flex justify-center h-[400px] md:h-[500px] lg:h-[600px] relative z-20">
-          <Lanyard3D />
+          <HeroBadge />
         </div>
 
         {/* Scroll Indicator */}
