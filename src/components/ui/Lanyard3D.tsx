@@ -130,9 +130,9 @@ function Band() {
             />
           </mesh>
           {/* Photo */}
-          <mesh position={[0, 0, 0.026]}>
+          <mesh position={[0, 0, 0.028]}>
             <planeGeometry args={[1.3, 1.9]} />
-            <meshBasicMaterial map={photoTexture} />
+            <meshBasicMaterial map={photoTexture} side={THREE.DoubleSide} />
           </mesh>
           {/* ID Hole */}
           <mesh position={[0, 1.05, 0]}>
