@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { extend, useFrame, Canvas } from "@react-three/fiber";
 import {
@@ -19,7 +19,7 @@ import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 extend({ MeshLineGeometry, MeshLineMaterial });
 
 function Band() {
-  const band = useRef<THREE.Mesh>(null);
+  const band = useRef<any>(null);
   const fixed = useRef<any>(null);
   const j1 = useRef<any>(null);
   const j2 = useRef<any>(null);
@@ -72,7 +72,9 @@ function Band() {
     ];
     // Create the curve from the physics nodes
     const curve = new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(p.x, p.y, p.z)));
-    (band.current.geometry as any).setPoints(curve.getPoints(32));
+    if (band.current.geometry) {
+      band.current.geometry.setPoints(curve.getPoints(32));
+    }
 
     // Drag interaction - move card based on mouse pointer
     const isPointerDown = state.pointer.x !== 0 || state.pointer.y !== 0;
@@ -157,14 +159,16 @@ export default function Lanyard3D() {
       <Canvas camera={{ position: [0, 0, 4.5], fov: 45 }} dpr={[1, 2]}>
         <ambientLight intensity={0.5} />
         <directionalLight position={[10, 10, 10]} intensity={1} castShadow />
-        <Physics gravity={[0, -9.81, 0]}>
-          <Band />
-        </Physics>
-        <Environment preset="city">
-          <Lightformer intensity={2} color="white" position={[0, -1, 5]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-          <Lightformer intensity={3} color="white" position={[-1, -1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-          <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
-        </Environment>
+        <Suspense fallback={null}>
+          <Physics gravity={[0, -9.81, 0]}>
+            <Band />
+          </Physics>
+          <Environment preset="city">
+            <Lightformer intensity={2} color="white" position={[0, -1, 5]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
+            <Lightformer intensity={3} color="white" position={[-1, -1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
+            <Lightformer intensity={3} color="white" position={[1, 1, 1]} rotation={[0, 0, Math.PI / 3]} scale={[100, 0.1, 1]} />
+          </Environment>
+        </Suspense>
       </Canvas>
     </div>
   );
