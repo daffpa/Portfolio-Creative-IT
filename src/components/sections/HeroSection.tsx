@@ -3,6 +3,9 @@
 import { motion, useMotionValue, useSpring, useScroll, useTransform } from "framer-motion";
 import { HERO_CONTENT, TYPEWRITER_ROLES } from "@/lib/constants";
 import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+
+const Lanyard3D = dynamic(() => import("@/components/ui/Lanyard3D"), { ssr: false });
 
 // ============================================================
 // HeroSection — Spring Text Reveal + Cursor Glow + Scroll Parallax
@@ -174,9 +177,9 @@ export default function HeroSection() {
       {/* Content with scroll parallax */}
       <motion.div
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
-        className="relative z-10 max-w-[1200px] mx-auto px-6 w-full"
+        className="relative z-10 max-w-[1200px] mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-2 items-center gap-10"
       >
-        <div className="flex flex-col items-center text-center">
+        <div className="flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-1 mt-10 lg:mt-0">
           {/* Label */}
           <motion.p
             initial={{ opacity: 0, y: 10, filter: "blur(4px)" }}
@@ -250,7 +253,7 @@ export default function HeroSection() {
             </motion.p>
 
             {/* CTAs */}
-            <motion.div variants={fadeUpVariant} className="flex flex-col sm:flex-row gap-4">
+            <motion.div variants={fadeUpVariant} className="flex flex-col sm:flex-row gap-4 w-full justify-center lg:justify-start">
               <motion.a
                 href="#projects"
                 whileHover={{ scale: 1.06, boxShadow: "0 0 30px rgba(37,99,255,0.4)" }}
@@ -271,6 +274,11 @@ export default function HeroSection() {
               </motion.a>
             </motion.div>
           </motion.div>
+        </div>
+
+        {/* Right column for 3D Lanyard */}
+        <div className="order-1 lg:order-2 w-full flex justify-center h-[400px] md:h-[500px] lg:h-[600px] relative z-20">
+          <Lanyard3D />
         </div>
 
         {/* Scroll Indicator */}
