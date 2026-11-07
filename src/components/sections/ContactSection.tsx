@@ -3,10 +3,10 @@
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { SOCIAL_LINKS } from "@/lib/constants";
 import { useRef, useState } from "react";
+import { CheckCircle2, AlertCircle, Loader2, Send, Mail, X } from "lucide-react";
 
 // ============================================================
-// ContactSection — Magnetic Button + Slide-in Socials + Ripple
-// Inspired by 21st.dev CTA sections
+// ContactSection — Magnetic Button + Slide-in Socials + Ripple + Notification
 // ============================================================
 
 const socialIcons: Record<string, string> = {
@@ -21,7 +21,16 @@ const socialColors: Record<string, string> = {
   email: "#ff4757",
 };
 
-function MagneticButton({ children, className, ...props }: { children: React.ReactNode; className?: string } & Omit<React.ComponentProps<typeof motion.button>, 'children'>) {
+function MagneticButton({
+  children,
+  className,
+  disabled,
+  ...props
+}: {
+  children: React.ReactNode;
+  className?: string;
+  disabled?: boolean;
+} & Omit<React.ComponentProps<typeof motion.button>, "children">) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const springX = useSpring(x, { stiffness: 200, damping: 15 });
@@ -30,7 +39,7 @@ function MagneticButton({ children, className, ...props }: { children: React.Rea
   const [ripple, setRipple] = useState<{ x: number; y: number } | null>(null);
 
   const handleMouse = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+    if (disabled || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     const dx = e.clientX - (rect.left + rect.width / 2);
     const dy = e.clientY - (rect.top + rect.height / 2);
@@ -38,10 +47,13 @@ function MagneticButton({ children, className, ...props }: { children: React.Rea
     y.set(dy * 0.2);
   };
 
-  const handleLeave = () => { x.set(0); y.set(0); };
+  const handleLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
 
   const handleClick = (e: React.MouseEvent) => {
-    if (!ref.current) return;
+    if (disabled || !ref.current) return;
     const rect = ref.current.getBoundingClientRect();
     setRipple({ x: e.clientX - rect.left, y: e.clientY - rect.top });
     setTimeout(() => setRipple(null), 600);
@@ -54,11 +66,12 @@ function MagneticButton({ children, className, ...props }: { children: React.Rea
       onMouseMove={handleMouse}
       onMouseLeave={handleLeave}
       onClick={handleClick}
-      whileTap={{ scale: 0.97 }}
-      className={`relative overflow-hidden ${className}`}
+      whileTap={disabled ? undefined : { scale: 0.97 }}
+      disabled={disabled}
+      className={`relative overflow-hidden ${disabled ? "opacity-60 cursor-not-allowed" : ""} ${className}`}
       {...props}
     >
-      {ripple && (
+      {ripple && !disabled && (
         <motion.span
           className="absolute rounded-full bg-white/20 pointer-events-none"
           style={{ left: ripple.x, top: ripple.y }}
@@ -73,6 +86,128 @@ function MagneticButton({ children, className, ...props }: { children: React.Rea
 }
 
 export default function ContactSection() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const [fieldErrors, setFieldErrors] = useState<{
+    name?: string;
+    email?: string;
+    message?: string;
+  }>({});
+
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [notification, setNotification] = useState<{
+    type: "success" | "error";
+    title: string;
+    message: string;
+  } | null>(null);
+
+  const validate = () => {
+    const errors: { name?: string; email?: string; message?: string } = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!formData.name.trim()) {
+      errors.name = "Nama wajib diisi";
+    } else if (formData.name.trim().length < 2) {
+      errors.name = "Nama minimal 2 karakter";
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = "Email wajib diisi";
+    } else if (!emailRegex.test(formData.email.trim())) {
+      errors.email = "Format email tidak valid (contoh: nama@domain.com)";
+    }
+
+    if (!formData.message.trim()) {
+      errors.message = "Pesan wajib diisi";
+    } else if (formData.message.trim().length < 5) {
+      errors.message = "Pesan minimal 5 karakter";
+    }
+
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Hapus error saat pengguna mulai mengetik
+    if (fieldErrors[name as keyof typeof fieldErrors]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setNotification(null);
+
+    // Periksa ketentuan validasi
+    if (!validate()) {
+      setStatus("error");
+      setNotification({
+        type: "error",
+        title: "Pesan Tidak Bisa Terkirim",
+        message:
+          "Mohon lengkapi seluruh formulir sesuai dengan ketentuan yang diminta di bawah setiap kolom.",
+      });
+      return;
+    }
+
+    setStatus("loading");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setStatus("success");
+        setNotification({
+          type: "success",
+          title: "Pesan Berhasil Terkirim!",
+          message:
+            "Terima kasih telah menghubungi. Pesan Anda sudah terkirim dan saya akan segera membalasnya.",
+        });
+        setFormData({ name: "", email: "", message: "" });
+        setFieldErrors({});
+      } else {
+        setStatus("error");
+        setNotification({
+          type: "error",
+          title: "Pesan Tidak Bisa Terkirim",
+          message:
+            result.message ||
+            "Terjadi kendala saat mengirim pesan. Silakan coba kembali atau hubungi via email langsung.",
+        });
+      }
+    } catch {
+      setStatus("error");
+      setNotification({
+        type: "error",
+        title: "Koneksi Bermasalah",
+        message:
+          "Tidak dapat terhubung ke server. Pastikan koneksi internet Anda aktif atau kirim langsung melalui email.",
+      });
+    }
+  };
+
+  const mailtoFallback = `mailto:daffagyanza@gmail.com?subject=${encodeURIComponent(
+    `Pesan dari ${formData.name || "Portfolio Visitor"}`
+  )}&body=${encodeURIComponent(
+    `Nama: ${formData.name}\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`
+  )}`;
+
   return (
     <section id="contact" className="relative py-section">
       <div className="max-w-[1200px] mx-auto px-6">
@@ -159,64 +294,192 @@ export default function ContactSection() {
             transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
             <form
-              action="mailto:daffagyanza@gmail.com"
-              method="POST"
-              encType="text/plain"
+              onSubmit={handleSubmit}
+              noValidate
               className="glass-card p-8 rounded-2xl space-y-6"
             >
+              {/* Notifikasi Status Pengiriman */}
+              {notification && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className={`p-4 rounded-xl border flex items-start gap-3.5 relative ${
+                    notification.type === "success"
+                      ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                      : "bg-red-500/10 border-red-500/30 text-red-400"
+                  }`}
+                >
+                  {notification.type === "success" ? (
+                    <CheckCircle2 className="w-5 h-5 mt-0.5 shrink-0 text-emerald-400" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5 mt-0.5 shrink-0 text-red-400" />
+                  )}
+                  <div className="flex-1 text-sm font-mono space-y-1">
+                    <p className="font-semibold">{notification.title}</p>
+                    <p className="text-xs text-text-muted leading-relaxed">
+                      {notification.message}
+                    </p>
+                    {notification.type === "error" && (
+                      <div className="pt-2">
+                        <a
+                          href={mailtoFallback}
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue hover:underline"
+                        >
+                          <Mail className="w-3.5 h-3.5" />
+                          Kirim via Aplikasi Email Langsung
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setNotification(null)}
+                    className="text-text-muted hover:text-text transition-colors p-1"
+                    aria-label="Tutup notifikasi"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </motion.div>
+              )}
+
+              {/* Input Nama */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.3 }}
               >
-                <label className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">
-                  Nama
-                </label>
+                <div className="flex justify-between items-center mb-2">
+                  <label
+                    htmlFor="contact-name"
+                    className="block font-mono text-xs text-text-muted uppercase tracking-wider"
+                  >
+                    Nama
+                  </label>
+                  <span className="font-mono text-[11px] text-text-dim">
+                    min. 2 karakter
+                  </span>
+                </div>
                 <input
-                  name="Name"
+                  id="contact-name"
+                  name="name"
                   type="text"
+                  value={formData.name}
+                  onChange={handleChange}
                   placeholder="Nama lengkap Anda"
-                  className="w-full bg-bg-elevated border border-border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none focus:border-blue/50 focus:ring-1 focus:ring-blue/20 transition-all placeholder:text-text-dim"
+                  disabled={status === "loading"}
+                  className={`w-full bg-bg-elevated border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none transition-all placeholder:text-text-dim ${
+                    fieldErrors.name
+                      ? "border-red-500/70 focus:border-red-500 focus:ring-1 focus:ring-red-500/20"
+                      : "border-border focus:border-blue/50 focus:ring-1 focus:ring-blue/20"
+                  }`}
                 />
+                {fieldErrors.name && (
+                  <p className="font-mono text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {fieldErrors.name}
+                  </p>
+                )}
               </motion.div>
+
+              {/* Input Email */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 }}
               >
-                <label className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">
-                  Email
-                </label>
+                <div className="flex justify-between items-center mb-2">
+                  <label
+                    htmlFor="contact-email"
+                    className="block font-mono text-xs text-text-muted uppercase tracking-wider"
+                  >
+                    Email
+                  </label>
+                  <span className="font-mono text-[11px] text-text-dim">
+                    email aktif
+                  </span>
+                </div>
                 <input
-                  name="Email"
+                  id="contact-email"
+                  name="email"
                   type="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="email@contoh.com"
-                  className="w-full bg-bg-elevated border border-border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none focus:border-blue/50 focus:ring-1 focus:ring-blue/20 transition-all placeholder:text-text-dim"
+                  disabled={status === "loading"}
+                  className={`w-full bg-bg-elevated border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none transition-all placeholder:text-text-dim ${
+                    fieldErrors.email
+                      ? "border-red-500/70 focus:border-red-500 focus:ring-1 focus:ring-red-500/20"
+                      : "border-border focus:border-blue/50 focus:ring-1 focus:ring-blue/20"
+                  }`}
                 />
+                {fieldErrors.email && (
+                  <p className="font-mono text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {fieldErrors.email}
+                  </p>
+                )}
               </motion.div>
+
+              {/* Input Pesan */}
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.5 }}
               >
-                <label className="block font-mono text-xs text-text-muted uppercase tracking-wider mb-2">
-                  Pesan
-                </label>
+                <div className="flex justify-between items-center mb-2">
+                  <label
+                    htmlFor="contact-message"
+                    className="block font-mono text-xs text-text-muted uppercase tracking-wider"
+                  >
+                    Pesan
+                  </label>
+                  <span className="font-mono text-[11px] text-text-dim">
+                    min. 5 karakter
+                  </span>
+                </div>
                 <textarea
-                  name="Message"
+                  id="contact-message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   placeholder="Ceritakan ide atau proyek Anda..."
                   rows={5}
-                  className="w-full bg-bg-elevated border border-border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none focus:border-blue/50 focus:ring-1 focus:ring-blue/20 transition-all placeholder:text-text-dim resize-none"
+                  disabled={status === "loading"}
+                  className={`w-full bg-bg-elevated border rounded-xl font-mono text-sm text-text py-3.5 px-4 focus:outline-none transition-all placeholder:text-text-dim resize-none ${
+                    fieldErrors.message
+                      ? "border-red-500/70 focus:border-red-500 focus:ring-1 focus:ring-red-500/20"
+                      : "border-border focus:border-blue/50 focus:ring-1 focus:ring-blue/20"
+                  }`}
                 />
+                {fieldErrors.message && (
+                  <p className="font-mono text-xs text-red-400 mt-1.5 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {fieldErrors.message}
+                  </p>
+                )}
               </motion.div>
+
+              {/* Tombol Kirim */}
               <MagneticButton
                 type="submit"
-                className="w-full py-4 rounded-xl bg-blue text-white font-heading font-semibold text-sm tracking-wide shadow-lg shadow-blue/25 hover:shadow-blue/40 transition-shadow"
+                disabled={status === "loading"}
+                className="w-full py-4 rounded-xl bg-blue text-white font-heading font-semibold text-sm tracking-wide shadow-lg shadow-blue/25 hover:shadow-blue/40 transition-shadow flex items-center justify-center gap-2 cursor-pointer"
               >
-                Kirim Pesan
+                {status === "loading" ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Mengirim Pesan...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    <span>Kirim Pesan</span>
+                  </>
+                )}
               </MagneticButton>
             </form>
           </motion.div>
