@@ -5,7 +5,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { name, email, message } = body;
 
-    // Validasi ketentuan input
+    // 1. Validasi ketentuan input
     if (!name || typeof name !== "string" || name.trim().length < 2) {
       return NextResponse.json(
         {
@@ -37,7 +37,36 @@ export async function POST(request: Request) {
       );
     }
 
-    // Kirim pesan ke email via formsubmit.co
+    // 2. Jika ada Web3Forms API Key di environment variable
+    const web3formsKey = process.env.WEB3FORMS_ACCESS_KEY;
+    if (web3formsKey) {
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            access_key: web3formsKey,
+            name: name.trim(),
+            email: email.trim(),
+            message: message.trim(),
+            subject: `Pesan Baru dari Portfolio: ${name.trim()}`,
+          }),
+          signal: AbortSignal.timeout(6000),
+        });
+
+        const data = await res.json().catch(() => null);
+        if (res.ok && data?.success) {
+          return NextResponse.json({
+            success: true,
+            message: "Pesan Anda berhasil terkirim! Terima kasih telah menghubungi saya.",
+          });
+        }
+      } catch (e) {
+        console.error("Web3Forms error:", e);
+      }
+    }
+
+    // 3. Coba kirim via FormSubmit dengan batas timeout 6 detik
     try {
       const response = await fetch("https://formsubmit.co/ajax/daffagyanza@gmail.com", {
         method: "POST",
@@ -52,6 +81,7 @@ export async function POST(request: Request) {
           _subject: `Pesan Baru dari Portfolio: ${name.trim()}`,
           _captcha: "false",
         }),
+        signal: AbortSignal.timeout(6000),
       });
 
       const data = await response.json().catch(() => null);
@@ -61,32 +91,27 @@ export async function POST(request: Request) {
           success: true,
           message: "Pesan Anda berhasil terkirim! Terima kasih telah menghubungi saya.",
         });
-      } else {
-        const errorMsg = data?.message || "Gagal mengirim pesan melalui penyedia layanan.";
-        return NextResponse.json(
-          {
-            success: false,
-            message: errorMsg,
-          },
-          { status: 502 }
-        );
       }
     } catch (err) {
-      console.error("Gagal mengirim email:", err);
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Koneksi ke server pengiriman gagal. Silakan coba lagi atau kirim via email langsung.",
-        },
-        { status: 502 }
-      );
+      console.error("FormSubmit timeout / offline:", err);
     }
+
+    // 4. Jika server pihak ketiga (formsubmit.co) sedang down / offline (misal Cloudflare 522)
+    return NextResponse.json(
+      {
+        success: false,
+        serviceDown: true,
+        message:
+          "Server relay email pihak ketiga (formsubmit.co) saat ini sedang down/gangguan jaringan (Cloudflare 522). Gunakan tombol langsung 'Kirim via Gmail' atau 'Aplikasi Email' di bawah agar pesan Anda langsung terkirim.",
+      },
+      { status: 503 }
+    );
   } catch (error) {
     console.error("Contact API error:", error);
     return NextResponse.json(
       {
         success: false,
-        message: "Terjadi kesalahan internal saat memproses pesan Anda.",
+        message: "Terjadi kesalahan internal pada server saat memproses pesan Anda.",
       },
       { status: 500 }
     );

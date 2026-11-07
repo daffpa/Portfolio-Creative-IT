@@ -3,7 +3,7 @@
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { SOCIAL_LINKS } from "@/lib/constants";
 import { useRef, useState } from "react";
-import { CheckCircle2, AlertCircle, Loader2, Send, Mail, X } from "lucide-react";
+import { CheckCircle2, AlertCircle, Loader2, Send, Mail, X, ExternalLink } from "lucide-react";
 
 // ============================================================
 // ContactSection — Magnetic Button + Slide-in Socials + Ripple + Notification
@@ -103,6 +103,7 @@ export default function ContactSection() {
     type: "success" | "error";
     title: string;
     message: string;
+    showDirectOptions?: boolean;
   } | null>(null);
 
   const validate = () => {
@@ -136,7 +137,6 @@ export default function ContactSection() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Hapus error saat pengguna mulai mengetik
     if (fieldErrors[name as keyof typeof fieldErrors]) {
       setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -153,7 +153,8 @@ export default function ContactSection() {
         type: "error",
         title: "Pesan Tidak Bisa Terkirim",
         message:
-          "Mohon lengkapi seluruh formulir sesuai dengan ketentuan yang diminta di bawah setiap kolom.",
+          "Mohon lengkapi semua bidang sesuai ketentuan: nama min. 2 karakter, format email valid, dan pesan min. 5 karakter.",
+        showDirectOptions: false,
       });
       return;
     }
@@ -169,7 +170,7 @@ export default function ContactSection() {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.success) {
         setStatus("success");
@@ -177,7 +178,8 @@ export default function ContactSection() {
           type: "success",
           title: "Pesan Berhasil Terkirim!",
           message:
-            "Terima kasih telah menghubungi. Pesan Anda sudah terkirim dan saya akan segera membalasnya.",
+            "Terima kasih telah menghubungi. Pesan Anda telah diterima dan saya akan segera membalasnya.",
+          showDirectOptions: false,
         });
         setFormData({ name: "", email: "", message: "" });
         setFieldErrors({});
@@ -185,10 +187,11 @@ export default function ContactSection() {
         setStatus("error");
         setNotification({
           type: "error",
-          title: "Pesan Tidak Bisa Terkirim",
+          title: "Pesan Tidak Bisa Terkirim Otomatis",
           message:
             result.message ||
-            "Terjadi kendala saat mengirim pesan. Silakan coba kembali atau hubungi via email langsung.",
+            "Penyedia server pengiriman email saat ini sedang mengalami gangguan. Anda dapat langsung mengirim pesan ini ke email saya menggunakan tombol di bawah:",
+          showDirectOptions: true,
         });
       }
     } catch {
@@ -197,16 +200,22 @@ export default function ContactSection() {
         type: "error",
         title: "Koneksi Bermasalah",
         message:
-          "Tidak dapat terhubung ke server. Pastikan koneksi internet Anda aktif atau kirim langsung melalui email.",
+          "Koneksi jaringan terputus. Silakan gunakan tombol langsung di bawah untuk mengirim pesan melalui Gmail atau aplikasi email.",
+        showDirectOptions: true,
       });
     }
   };
 
-  const mailtoFallback = `mailto:daffagyanza@gmail.com?subject=${encodeURIComponent(
-    `Pesan dari ${formData.name || "Portfolio Visitor"}`
-  )}&body=${encodeURIComponent(
-    `Nama: ${formData.name}\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`
-  )}`;
+  const subjectText = `Pesan Portfolio dari ${formData.name || "Pengunjung"}`;
+  const bodyText = `Nama: ${formData.name}\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`;
+
+  const gmailWebLink = `https://mail.google.com/mail/?view=cm&fs=1&to=daffagyanza@gmail.com&su=${encodeURIComponent(
+    subjectText
+  )}&body=${encodeURIComponent(bodyText)}`;
+
+  const mailtoLink = `mailto:daffagyanza@gmail.com?subject=${encodeURIComponent(
+    subjectText
+  )}&body=${encodeURIComponent(bodyText)}`;
 
   return (
     <section id="contact" className="relative py-section">
@@ -304,42 +313,55 @@ export default function ContactSection() {
                   initial={{ opacity: 0, y: -10, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className={`p-4 rounded-xl border flex items-start gap-3.5 relative ${
+                  className={`p-4 rounded-xl border flex flex-col gap-3 relative ${
                     notification.type === "success"
                       ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
                       : "bg-red-500/10 border-red-500/30 text-red-400"
                   }`}
                 >
-                  {notification.type === "success" ? (
-                    <CheckCircle2 className="w-5 h-5 mt-0.5 shrink-0 text-emerald-400" />
-                  ) : (
-                    <AlertCircle className="w-5 h-5 mt-0.5 shrink-0 text-red-400" />
-                  )}
-                  <div className="flex-1 text-sm font-mono space-y-1">
-                    <p className="font-semibold">{notification.title}</p>
-                    <p className="text-xs text-text-muted leading-relaxed">
-                      {notification.message}
-                    </p>
-                    {notification.type === "error" && (
-                      <div className="pt-2">
-                        <a
-                          href={mailtoFallback}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue hover:underline"
-                        >
-                          <Mail className="w-3.5 h-3.5" />
-                          Kirim via Aplikasi Email Langsung
-                        </a>
-                      </div>
+                  <div className="flex items-start gap-3">
+                    {notification.type === "success" ? (
+                      <CheckCircle2 className="w-5 h-5 mt-0.5 shrink-0 text-emerald-400" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 mt-0.5 shrink-0 text-red-400" />
                     )}
+                    <div className="flex-1 text-sm font-mono space-y-1">
+                      <p className="font-semibold">{notification.title}</p>
+                      <p className="text-xs text-text-muted leading-relaxed">
+                        {notification.message}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setNotification(null)}
+                      className="text-text-muted hover:text-text transition-colors p-1"
+                      aria-label="Tutup notifikasi"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setNotification(null)}
-                    className="text-text-muted hover:text-text transition-colors p-1"
-                    aria-label="Tutup notifikasi"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+
+                  {/* Tombol Aksi Langsung saat Gagal */}
+                  {notification.showDirectOptions && (
+                    <div className="pt-2 border-t border-border/50 flex flex-wrap gap-2">
+                      <a
+                        href={gmailWebLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-blue text-white font-mono text-xs font-semibold hover:bg-blue/90 transition-colors shadow-sm"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        Kirim via Gmail (Web)
+                      </a>
+                      <a
+                        href={mailtoLink}
+                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-bg-elevated border border-border text-text font-mono text-xs hover:bg-bg transition-colors"
+                      >
+                        <Mail className="w-3.5 h-3.5" />
+                        Kirim via Aplikasi Email
+                      </a>
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -481,6 +503,28 @@ export default function ContactSection() {
                   </>
                 )}
               </MagneticButton>
+
+              {/* Opsi Kontak Alternatif Cepat */}
+              <div className="pt-2 text-center">
+                <p className="font-mono text-xs text-text-dim">
+                  Atau hubungi langsung melalui{" "}
+                  <a
+                    href={gmailWebLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue hover:underline font-semibold"
+                  >
+                    Gmail Web
+                  </a>{" "}
+                  •{" "}
+                  <a
+                    href="mailto:daffagyanza@gmail.com"
+                    className="text-blue hover:underline font-semibold"
+                  >
+                    daffagyanza@gmail.com
+                  </a>
+                </p>
+              </div>
             </form>
           </motion.div>
         </div>
