@@ -162,22 +162,66 @@ export default function ContactSection() {
     setStatus("loading");
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // 1. Coba kirim via Next.js Route Handler
+      let isSuccess = false;
+      let responseMessage = "";
 
-      const result = await response.json().catch(() => ({}));
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
 
-      if (response.ok && result.success) {
+        const result = await response.json().catch(() => ({}));
+
+        if (response.ok && result.success) {
+          isSuccess = true;
+          responseMessage = result.message || "Pesan Anda berhasil terkirim!";
+        } else {
+          responseMessage = result.message || "";
+        }
+      } catch {
+        // Fallback jika /api/contact gagal
+      }
+
+      // 2. Jika route internal bermasalah, lakukan direct client-side fallback ke Web3Forms
+      if (!isSuccess) {
+        try {
+          const directRes = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify({
+              access_key: "46215670-4f8e-4b77-a8ad-1ea4bb42673c",
+              name: formData.name.trim(),
+              email: formData.email.trim(),
+              message: formData.message.trim(),
+              subject: `Pesan Baru dari Portfolio: ${formData.name.trim()}`,
+            }),
+          });
+
+          const directData = await directRes.json().catch(() => null);
+          if (directRes.ok && directData?.success) {
+            isSuccess = true;
+            responseMessage = "Pesan Anda berhasil terkirim! Terima kasih telah menghubungi.";
+          }
+        } catch {
+          // Tetap error
+        }
+      }
+
+      if (isSuccess) {
         setStatus("success");
         setNotification({
           type: "success",
           title: "Pesan Berhasil Terkirim!",
           message:
+            responseMessage ||
             "Terima kasih telah menghubungi. Pesan Anda telah diterima dan saya akan segera membalasnya.",
           showDirectOptions: false,
         });
@@ -187,10 +231,10 @@ export default function ContactSection() {
         setStatus("error");
         setNotification({
           type: "error",
-          title: "Pesan Tidak Bisa Terkirim Otomatis",
+          title: "Pesan Tidak Bisa Terkirim",
           message:
-            result.message ||
-            "Penyedia server pengiriman email saat ini sedang mengalami gangguan. Anda dapat langsung mengirim pesan ini ke email saya menggunakan tombol di bawah:",
+            responseMessage ||
+            "Penyedia pengiriman email sedang bermasalah. Anda dapat mengirim langsung ke email saya melalui tombol di bawah:",
           showDirectOptions: true,
         });
       }
